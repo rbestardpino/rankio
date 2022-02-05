@@ -1,14 +1,5 @@
 import Metatags from "@components/Metatags";
-import {
-  Button,
-  Container,
-  Modal,
-  Typography,
-  Box,
-  Grid,
-  Divider,
-  TextField,
-} from "@mui/material";
+import { Button, Container } from "@mui/material";
 import { useState } from "react";
 
 const style = {
@@ -24,9 +15,6 @@ const style = {
 };
 
 export default function Home() {
-  const [open, setOpen] = useState(true);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   return (
     <main>
       <Metatags></Metatags>
