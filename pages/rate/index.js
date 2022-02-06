@@ -1,3 +1,4 @@
+import Metatags from "@components/Metatags";
 import { getMovies } from "@lib/services/tmdb";
 import {
   Container,
@@ -22,18 +23,18 @@ export async function getServerSideProps() {
 export default function Rate({ movies }) {
   return (
     <main>
+      <Metatags
+        title="Rate a movie | RankIO"
+        description="Rate a movie | RankIO"
+      />
       <Container sx={{ mt: 3, mb: 3 }}>
         <Typography variant="h3" mb={3}>
           Pick a movie to rate
         </Typography>
-        <Grid
-          container
-          spacing={{ xs: 2, md: 3 }}
-          // columns={{ xs: 4, sm: 8, md: 12 }}
-        >
+        <Grid container spacing={{ xs: 2, md: 3 }}>
           {movies.map((mov) => (
             <Grid item xs key={mov.id}>
-              <MovieCard movie={mov}></MovieCard>
+              <MovieCard movie={mov} />
             </Grid>
           ))}
         </Grid>

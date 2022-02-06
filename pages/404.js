@@ -24,7 +24,7 @@ export default function Custom404() {
           ></iframe>
         </Grid>
         <Grid item>
-          <Button variant="contained" href="/">
+          <Button variant="outlined" href="/">
             Go home
           </Button>
         </Grid>

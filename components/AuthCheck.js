@@ -10,7 +10,7 @@ export default function AuthCheck(props) {
   return username
     ? props.children
     : props.fallback || (
-        <Button href="/login" variant="outlined" color="warning">
+        <Button fullWidth href="/login" variant="outlined" color="warning">
           You must be signed in
         </Button>
       );

@@ -17,6 +17,7 @@ const clientSideEmotionCache = createEmotionCache();
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const userData = useUserData();
+  // const userReviews = useUserReviews();
 
   return (
     <CacheProvider value={emotionCache}>
@@ -27,9 +28,11 @@ export default function MyApp(props) {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <UserContext.Provider value={userData}>
+          {/* <UserReviewsContext.Provider value={userReviews}> */}
           <Navbar />
           <Component {...pageProps} />
           <Toaster />
+          {/* </UserReviewsContext.Provider> */}
         </UserContext.Provider>
       </ThemeProvider>
     </CacheProvider>

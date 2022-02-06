@@ -7,21 +7,8 @@ import {
   getUserDoc,
   getUsernamesDoc,
 } from "@lib/services/db";
-import {
-  BadgeOutlined,
-  Google,
-  SendOutlined,
-  ErrorOutline,
-} from "@mui/icons-material";
-import {
-  Button,
-  Container,
-  Grid,
-  TextField,
-  Typography,
-  Box,
-} from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { Google, SendOutlined, ErrorOutline } from "@mui/icons-material";
+import { Button, Grid, TextField, Typography, Box } from "@mui/material";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import { useContext, useState, useEffect, useCallback } from "react";
@@ -77,7 +64,7 @@ function UsernameForm() {
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { user, username } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const onSubmit = async (e) => {
     e.preventDefault();
