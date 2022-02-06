@@ -6,16 +6,16 @@ import Review from "@components/Review";
 
 export default function ReviewsList() {
   const { reviews } = useContext(UserContext);
-
+  console.log(reviews);
   return (
     <AuthCheck>
       <Grid container direction="column" rowSpacing={2}>
         {/* TODO: search bar */}
-        {reviews ? (
+        {reviews.length ? (
           reviews.map((rev) => (
             <>
               <Grid item xs mx={1}>
-                <Review review={rev} key={rev.id}></Review>
+                <Review review={rev} noWrap key={rev.id}></Review>
               </Grid>
             </>
           ))

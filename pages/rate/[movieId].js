@@ -30,10 +30,14 @@ export async function getServerSideProps({ query: urlQuery }) {
 }
 
 export default function RateMovie({ movie }) {
-  const { user, reviews } = useContext(UserContext);
+  const { user, reviews, username } = useContext(UserContext);
   const existingReview = reviews.filter((rev) => rev.id == movie.id)[0];
-  const [rating, setRating] = useState(existingReview?.rating || 5);
-  const [review, setReview] = useState(existingReview?.review || "");
+  const [rating, setRating] = useState(
+    existingReview ? existingReview.rating : 5
+  );
+  const [review, setReview] = useState(
+    existingReview ? existingReview.review : ""
+  );
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -43,6 +47,7 @@ export default function RateMovie({ movie }) {
         rating: rating,
         image: movie.image,
         title: movie.original_title,
+        creator: username,
       },
       user.uid,
       movie.id

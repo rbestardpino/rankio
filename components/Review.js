@@ -8,18 +8,27 @@ import {
   Rating,
   Box,
   IconButton,
+  CardActionArea,
 } from "@mui/material";
 import Link from "next/link";
 
-export default function Review({ review }) {
+export default function Review({ review, noWrap, noLink }) {
   return (
-    <Link href={`/rate/${review.id}`}>
-      <Card variant="elevation" elevation={2}>
-        <Grid container direction="row" columnSpacing={2} height={170}>
+    <Card variant="elevation" elevation={5}>
+      <CardActionArea
+        href={`/${review.creator}/${review.id}`}
+        disabled={noLink}
+      >
+        <Grid
+          container
+          direction="row"
+          columnSpacing={2}
+          height={noLink ? 270 : 170}
+        >
           <Grid item xs>
             <Card>
               <CardMedia
-                height={170}
+                height={noLink ? 270 : 170}
                 component="img"
                 image={review.image}
                 alt={`${review.title}'s poster`}
@@ -37,22 +46,22 @@ export default function Review({ review }) {
           >
             <Grid item xs container direction="row">
               <Grid item xs>
-                <Typography variant="h6">{review.title}</Typography>
+                <Typography variant="h6" noWrap={noWrap}>
+                  {review.title}
+                </Typography>
               </Grid>
-              <Grid item xs textAlign="right"></Grid>
             </Grid>
             <Grid item xs>
               <Rating value={review.rating} max={10} readOnly size="large" />
             </Grid>
-            <Grid item xs>
-              {/* FIXME: Text overflow ellipsis */}
-              <Typography variant="body" noWrap textOverflow="ellipsis">
+            <Grid item xs container direction="row">
+              <Typography variant="body" noWrap={noWrap}>
                 {review.review}
               </Typography>
             </Grid>
           </Grid>
         </Grid>
-      </Card>
-    </Link>
+      </CardActionArea>
+    </Card>
   );
 }
