@@ -15,8 +15,10 @@ import {
   MenuItem,
   Divider,
 } from "@mui/material/";
-import { LogoDev, NotificationsActiveOutlined } from "@mui/icons-material/";
+import { NotificationsActiveOutlined } from "@mui/icons-material/";
 import Link from "next/link";
+import Image from "next/image";
+import isotipo from "../public/isotipo-inverted.png";
 
 export default function Navbar() {
   const { user, username } = useContext(UserContext);
@@ -40,14 +42,10 @@ export default function Navbar() {
       <AppBar position="static">
         <Toolbar>
           <Link href="/">
-            <LogoDev sx={{ fontSize: 55 }} />
+            <Box component="div" sx={{ flexGrow: 1 }}>
+              <Image src={isotipo} height={50} width={50} />
+            </Box>
           </Link>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1 }}
-          ></Typography>
-
           {/* user is signed-in and has username */}
           {username && (
             <div>
@@ -59,12 +57,7 @@ export default function Navbar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Badge
-                  color="success"
-                  variant="dot" /*TODO: make visible if user has notifications only: invisible prop*/
-                >
-                  <Avatar alt={user?.displayName} src={user?.photoURL} />
-                </Badge>
+                <Avatar alt={user?.displayName} src={user?.photoURL} />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -84,11 +77,6 @@ export default function Navbar() {
                 <Link href={`/${username}`}>
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
                 </Link>
-                <MenuItem onClick={handleClose}>
-                  {/* Hide icon when user has not notifications and change text color */}
-                  Notifications
-                  <NotificationsActiveOutlined color="success" />
-                </MenuItem>
                 <MenuItem onClick={handleClose}>Settings</MenuItem>
                 <Divider></Divider>
                 <MenuItem onClick={signOut} dense sx={{ color: "#a2b223" }}>

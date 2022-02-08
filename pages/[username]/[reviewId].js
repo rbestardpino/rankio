@@ -7,7 +7,7 @@ import {
   getUsernames,
   getUserWithUsername,
 } from "@lib/services/db";
-import { RateReview } from "@mui/icons-material";
+import { RateReview, Share } from "@mui/icons-material";
 import { Button, Container, Grid, Typography } from "@mui/material";
 import { useContext } from "react";
 
@@ -50,22 +50,33 @@ export default function ReviewPage({ username, review }) {
       <Container sx={{ my: 3 }}>
         <Grid container direction="column" rowSpacing={3}>
           <Grid item xs container direction="row" columnSpacing={2}>
-            <Grid item xs>
+            <Grid item xs={5}>
               <Typography variant="h4">Review</Typography>
             </Grid>
-            <Grid item xs textAlign="right">
+            <Grid item xs={7} textAlign="right">
               <Button
                 variant="outlined"
                 color="inherit"
                 startIcon={<RateReview />}
                 href={`/rate/${review.id}`}
               >
-                {user.username === username ? "Edit" : "Make your review"}
+                {user.username === username ? "Edit" : "Make your own review"}
               </Button>
             </Grid>
           </Grid>
           <Grid item xs>
-            <Review item xs review={review} noLink />
+            <Review item xs review={review} reviewPage />
+          </Grid>
+          <Grid item xs>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="inherit"
+              startIcon={<Share />}
+            >
+              Share this review
+              {/* TODO: make this button useful */}
+            </Button>
           </Grid>
         </Grid>
       </Container>

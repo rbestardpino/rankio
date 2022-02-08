@@ -1,26 +1,34 @@
 import Metatags from "@components/Metatags";
-import { getMovies } from "@lib/services/tmdb";
-import {
-  Container,
-  Grid,
-  Typography,
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-} from "@mui/material";
-import Link from "next/link";
+import NothingFound from "@components/NothingFound";
+import { getPopularMovies, searchMovies } from "@lib/services/tmdb";
+import { Container, Grid, Typography, TextField } from "@mui/material";
+import { useState } from "react";
+import MovieCard from "@components/MovieCard";
 
 export async function getServerSideProps() {
-  const movies = await getMovies({
-    sort_by: "popularity.desc",
-  });
+  const movies = await getPopularMovies({});
   return {
     props: { movies: movies }, // will be passed to the page component as props
   };
 }
 
 export default function Rate({ movies }) {
+  const [filteredMovies, setFilteredMovies] = useState(movies);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = async (e) => {
+    e.preventDefault();
+    const _input = e.target.value;
+    if (!_input) setFilteredMovies(movies);
+    else {
+      setLoading(true);
+      setFilteredMovies(await searchMovies({ query: _input }));
+      setLoading(false);
+    }
+    setInput(_input);
+  };
+
   return (
     <main>
       <Metatags
@@ -28,38 +36,49 @@ export default function Rate({ movies }) {
         description="Rate a movie | RankIO"
       />
       <Container sx={{ mt: 3, mb: 3 }}>
-        <Typography variant="h3" mb={3}>
-          Pick a movie to rate
-        </Typography>
-        <Grid container spacing={{ xs: 2, md: 3 }}>
-          {movies.map((mov) => (
-            <Grid item xs key={mov.id}>
-              <MovieCard movie={mov} />
-            </Grid>
-          ))}
+        <Grid container direction="column" rowSpacing={3}>
+          <Grid item xs>
+            <Typography variant="h3" mb={3}>
+              Pick a movie to rate
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Search movie"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="subtitle2">
+              {loading
+                ? "Searching..."
+                : input === ""
+                ? "Popular movies"
+                : `Results for "${input}"`}
+            </Typography>
+          </Grid>
+          <Grid item xs container spacing={3}>
+            {filteredMovies.length ? (
+              filteredMovies.map((mov) => (
+                <Grid
+                  item
+                  xs
+                  container
+                  alignContent="start"
+                  justifyContent="center"
+                  key={mov.id}
+                >
+                  <MovieCard movie={mov} />
+                </Grid>
+              ))
+            ) : (
+              <NothingFound message="We could not find the movie you're looking for 😢" />
+            )}
+          </Grid>
         </Grid>
       </Container>
     </main>
-  );
-}
-
-function MovieCard({ movie }) {
-  return (
-    <Link href={`/rate/${movie.id}`}>
-      <Card sx={{ width: 250 }} variant="outlined">
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            image={movie.image}
-            alt={`${movie.original_title}'s poster`}
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {movie.original_title}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    </Link>
   );
 }

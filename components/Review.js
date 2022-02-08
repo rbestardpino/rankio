@@ -1,34 +1,26 @@
-import { RateReview } from "@mui/icons-material";
 import {
   Card,
-  Container,
   Grid,
   CardMedia,
   Typography,
   Rating,
-  Box,
-  IconButton,
   CardActionArea,
+  Paper,
+  Divider,
 } from "@mui/material";
-import Link from "next/link";
 
-export default function Review({ review, noWrap, noLink }) {
+export default function Review({ review, noWrap, reviewPage }) {
   return (
     <Card variant="elevation" elevation={5}>
       <CardActionArea
         href={`/${review.creator}/${review.id}`}
-        disabled={noLink}
+        disabled={reviewPage}
       >
-        <Grid
-          container
-          direction="row"
-          columnSpacing={2}
-          height={noLink ? 270 : 170}
-        >
-          <Grid item xs>
+        <Grid container direction="row" columnSpacing={2}>
+          <Grid item xs height={reviewPage ? 270 : 170}>
             <Card>
               <CardMedia
-                height={noLink ? 270 : 170}
+                height={reviewPage ? 270 : 170}
                 component="img"
                 image={review.image}
                 alt={`${review.title}'s poster`}
@@ -39,7 +31,7 @@ export default function Review({ review, noWrap, noLink }) {
             item
             container
             xs={10}
-            my={0.5}
+            mt={0.5}
             direction="column"
             rowSpacing={1}
             width={0}
@@ -54,8 +46,8 @@ export default function Review({ review, noWrap, noLink }) {
             <Grid item xs>
               <Rating value={review.rating} max={10} readOnly size="large" />
             </Grid>
-            <Grid item xs container direction="row">
-              <Typography variant="body" noWrap={noWrap}>
+            <Grid item xs container>
+              <Typography variant="body1" noWrap={noWrap}>
                 {review.review}
               </Typography>
             </Grid>

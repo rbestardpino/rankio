@@ -1,9 +1,10 @@
 import Head from "next/head";
+import img from "../public/favicon-inverted.ico";
 
 export default function Metatags({
   title = "RankIO",
   description = "A website to track your movies' reviews",
-  image = "https://fireship.io/courses/react-next-firebase/img/featured.png",
+  image = img,
 }) {
   return (
     <Head>
