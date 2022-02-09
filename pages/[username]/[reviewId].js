@@ -26,33 +26,32 @@ import {
   WhatsappShareButton,
 } from "react-share";
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const { username, reviewId } = params;
 
   const uid = await usernameToUID(username);
   const review = await getReview(uid, reviewId);
   return {
     props: { username, review },
-    revalidate: 3600,
   };
 }
 
-export async function getStaticPaths() {
-  const usernames = await getUsernames();
-  let paths = [];
-  for (const username of usernames) {
-    const userDoc = await getUserWithUsername(username);
-    const reviews = await getReviewsOf(userDoc.id);
-    if (!reviews) continue;
-    for (const rev of reviews) {
-      paths.push({ params: { username: username, reviewId: rev.id } });
-    }
-  }
-  return {
-    paths: paths,
-    fallback: false,
-  };
-}
+// export async function getStaticPaths() {
+//   const usernames = await getUsernames();
+//   let paths = [];
+//   for (const username of usernames) {
+//     const userDoc = await getUserWithUsername(username);
+//     const reviews = await getReviewsOf(userDoc.id);
+//     if (!reviews) continue;
+//     for (const rev of reviews) {
+//       paths.push({ params: { username: username, reviewId: rev.id } });
+//     }
+//   }
+//   return {
+//     paths: paths,
+//     fallback: false,
+//   };
+// }
 
 export default function ReviewPage({ username, review }) {
   const { username: cUsername } = useContext(UserContext);
