@@ -1,25 +1,23 @@
 import AuthCheck from "@components/AuthCheck";
-import { useContext } from "react";
-import { UserContext } from "@lib/context";
 import Metatags from "@components/Metatags";
+import { UserContext } from "@lib/context";
+import { saveReview } from "@lib/services/db";
 import { getMovie } from "@lib/services/tmdb";
 import { RateReview } from "@mui/icons-material";
 import {
-  Container,
+  Box,
+  Button,
   Card,
   CardMedia,
-  Typography,
+  Container,
   Grid,
-  Box,
-  TextField,
   Rating,
-  Button,
-  Slider,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { useState } from "react";
-import { saveReview, getReview } from "@lib/services/db";
-import toast from "react-hot-toast";
 import { useRouter } from "next/router";
+import { useContext, useState } from "react";
+import toast from "react-hot-toast";
 
 export async function getServerSideProps({ query: urlQuery }) {
   const { movieId } = urlQuery;
@@ -31,11 +29,18 @@ export async function getServerSideProps({ query: urlQuery }) {
 
 export default function RateMovie({ movie }) {
   const { user, reviews, username } = useContext(UserContext);
-  const existingReview = reviews.find((rev) => rev.id == movie.id);
   // FIXME: why existing review doesnt work!!!
-  const [rating, setRating] = useState(existingReview?.rating || 5);
-  const [review, setReview] = useState(existingReview?.review || "");
+  const existingReview = reviews.find((rev) => rev.id === movie.id);
+  const [rating, setRating] = useState(
+    existingReview ? existingReview.rating : 5
+  );
+  const [review, setReview] = useState(
+    existingReview ? existingReview.review : ""
+  );
   const router = useRouter();
+
+  movie.original_title =
+    movie.language === "en" ? movie.original_title : movie.title;
 
   const handleSubmit = async () => {
     await saveReview(
@@ -73,7 +78,14 @@ export default function RateMovie({ movie }) {
           <Grid container item xs={12} lg={9} direction="column" rowSpacing={3}>
             <Grid item xs>
               <Typography variant="h4" textAlign="left">
-                Rate "{movie.original_title}"
+                Rate{" "}
+                <Box
+                  fontWeight="fontWeightMedium"
+                  fontStyle="italic"
+                  display="inline"
+                >
+                  {movie.original_title}
+                </Box>
               </Typography>
             </Grid>
             <Grid item xs>
@@ -82,8 +94,8 @@ export default function RateMovie({ movie }) {
                 size="large"
                 max={10}
                 value={rating}
-                onChange={(event, newValue) => {
-                  setRating(newValue);
+                onChange={(event) => {
+                  setRating(event.target.value);
                 }}
               />
               {rating !== null && <Box>{`${rating}/10`}</Box>}
@@ -93,11 +105,12 @@ export default function RateMovie({ movie }) {
                 autoComplete="off"
                 fullWidth
                 multiline
+                autoFocus
                 id="review"
                 label="Review"
                 variant="outlined"
                 value={review}
-                onChange={(value) => setReview(value.currentTarget.value)}
+                onChange={(event) => setReview(event.target.value)}
               />
             </Grid>
             <Grid item xs textAlign="center">

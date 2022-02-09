@@ -6,16 +6,31 @@ import {
   getReviewsOf,
   getUsernames,
   getUserWithUsername,
+  usernameToUID,
 } from "@lib/services/db";
-import { RateReview, Share } from "@mui/icons-material";
+import {
+  FacebookOutlined,
+  RateReview,
+  Reddit,
+  Telegram,
+  Twitter,
+  WhatsappOutlined,
+} from "@mui/icons-material";
 import { Button, Container, Grid, Typography } from "@mui/material";
 import { useContext } from "react";
+import {
+  FacebookShareButton,
+  RedditShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+} from "react-share";
 
 export async function getStaticProps({ params }) {
   const { username, reviewId } = params;
 
-  const userDoc = await getUserWithUsername(username);
-  const review = await getReview(userDoc.id, reviewId);
+  const uid = await usernameToUID(username);
+  const review = await getReview(uid, reviewId);
   return {
     props: { username, review },
     revalidate: 3600,
@@ -40,7 +55,10 @@ export async function getStaticPaths() {
 }
 
 export default function ReviewPage({ username, review }) {
-  const user = useContext(UserContext);
+  const { username: cUsername } = useContext(UserContext);
+  const shareURL = `https://rankio.bepi.tech/${username}/${review.id}`;
+  const shareTitle = `Check ${username}'s take on ${review.title}`;
+
   return (
     <main>
       <Metatags
@@ -53,6 +71,7 @@ export default function ReviewPage({ username, review }) {
             <Grid item xs={5}>
               <Typography variant="h4">Review</Typography>
             </Grid>
+
             <Grid item xs={7} textAlign="right">
               <Button
                 variant="outlined"
@@ -60,23 +79,55 @@ export default function ReviewPage({ username, review }) {
                 startIcon={<RateReview />}
                 href={`/rate/${review.id}`}
               >
-                {user.username === username ? "Edit" : "Make your own review"}
+                {cUsername === username ? "Edit" : "Make your own review"}
               </Button>
             </Grid>
           </Grid>
-          <Grid item xs>
-            <Review item xs review={review} reviewPage />
+          <Grid
+            item
+            xs
+            container
+            direction="row"
+            columnSpacing={2}
+            textAlign="center"
+          >
+            <Grid item xs>
+              <TelegramShareButton url={shareURL} title={shareTitle}>
+                <Telegram />
+              </TelegramShareButton>
+            </Grid>
+            <Grid item xs>
+              <WhatsappShareButton
+                url={shareURL}
+                title={shareTitle}
+                separator=":: "
+              >
+                <WhatsappOutlined />
+              </WhatsappShareButton>
+            </Grid>
+            <Grid item xs>
+              <TwitterShareButton url={shareURL} title={shareTitle}>
+                <Twitter />
+              </TwitterShareButton>
+            </Grid>
+            <Grid item xs>
+              <FacebookShareButton url={shareURL} quote={shareTitle}>
+                <FacebookOutlined />
+              </FacebookShareButton>
+            </Grid>
+            <Grid item xs>
+              <RedditShareButton
+                url={shareURL}
+                title={shareTitle}
+                windowWidth={660}
+                windowHeight={460}
+              >
+                <Reddit />
+              </RedditShareButton>
+            </Grid>
           </Grid>
           <Grid item xs>
-            <Button
-              fullWidth
-              variant="outlined"
-              color="inherit"
-              startIcon={<Share />}
-            >
-              Share this review
-              {/* TODO: make this button useful */}
-            </Button>
+            <Review review={review} reviewPage />
           </Grid>
         </Grid>
       </Container>

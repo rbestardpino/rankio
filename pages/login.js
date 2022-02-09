@@ -7,17 +7,18 @@ import {
   getUserDoc,
   getUsernamesDoc,
 } from "@lib/services/db";
-import { Google, SendOutlined, ErrorOutline } from "@mui/icons-material";
-import { Button, Grid, TextField, Typography, Box } from "@mui/material";
+import { ErrorOutline, Google, SendOutlined } from "@mui/icons-material";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
-import { useContext, useState, useEffect, useCallback } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 export default function Login() {
   const { user, username } = useContext(UserContext);
+  const router = useRouter();
 
   if (user && username) {
-    useRouter().push("/");
+    router.push("/");
   }
 
   return (
@@ -108,7 +109,7 @@ function UsernameForm() {
 
   useEffect(() => {
     checkUsername(formValue);
-  }, [formValue]);
+  }, [formValue, checkUsername]);
 
   // Hit the database for username match after each debounced change
   // useCallback is required for debounce to work

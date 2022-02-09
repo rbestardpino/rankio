@@ -1,8 +1,9 @@
 import Metatags from "@components/Metatags";
-import { getNReviewsOf, getUserWithUsername } from "@lib/services/db";
-import { getMovie } from "@lib/services/tmdb";
-import { Typography } from "@mui/material";
+import { UserContext } from "@lib/context";
+import { Container, Typography } from "@mui/material";
+import { useContext } from "react";
 
+// TODO: whole page
 // export async function getServerSideProps({ query: urlQuery }) {
 //   const { username } = urlQuery;
 
@@ -34,17 +35,20 @@ import { Typography } from "@mui/material";
 //   };
 // }
 
-export default function UserProfile({ user, reviews }) {
+export default function UserProfile() {
+  const { user, username, reviews } = useContext(UserContext);
   return (
     <main>
       <Metatags
-        title={`${user.username} | RankIO`}
-        description={`${user.username}'s public profile`}
-        image={user.photoURL}
+        title={`${username} | RankIO`}
+        description={`${username}'s public profile`}
+        image={user?.photoURL}
       ></Metatags>
-      <Typography variant="h5">Name: {user.displayName}</Typography>
-      <Typography variant="h5">Username: {user.username}</Typography>
-      {/* <Typography variant="h5">Reviews: {JSON.stringify(reviews)}</Typography> */}
+      <Container sx={{ my: 4 }}>
+        <Typography variant="h5">Name: {user?.displayName}</Typography>
+        <Typography variant="h5">Username: {username}</Typography>
+        <Typography variant="h5">Reviews: {JSON.stringify(reviews)}</Typography>
+      </Container>
     </main>
   );
 }

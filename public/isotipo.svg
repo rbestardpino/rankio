@@ -28,8 +28,8 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="0.24943884"
-     inkscape:cx="242.54442"
-     inkscape:cy="274.61641"
+     inkscape:cx="-322.7244"
+     inkscape:cy="398.89538"
      inkscape:window-width="1366"
      inkscape:window-height="745"
      inkscape:window-x="-8"
@@ -39,7 +39,7 @@
   <defs
      id="defs1195">
     <filter
-       style="color-interpolation-filters:sRGB;"
+       style="color-interpolation-filters:sRGB"
        inkscape:label="Invert"
        id="filter830"
        x="0"
@@ -87,7 +87,7 @@
          result="color2" />
     </filter>
     <filter
-       style="color-interpolation-filters:sRGB;"
+       style="color-interpolation-filters:sRGB"
        inkscape:label="Invert"
        id="filter836"
        x="0"
@@ -139,18 +139,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-79.586905,-55.720834)">
-    <path
-       class="st0"
-       d="M -7.329739,302.25773 H -220.20595 c -15.96571,0 -29.02856,-13.06288 -29.02856,-29.02858 V 60.352978 c 0,-15.965715 13.06285,-29.028572 29.02856,-29.028572 H -7.329739 c 15.96571,0 29.02856,13.062857 29.02856,29.028572 V 273.22915 c 0,15.9657 -13.06285,29.02858 -29.02856,29.02858 z"
-       id="path18"
-       style="fill:#ffffff;fill-opacity:1;stroke-width:2.41904;filter:url(#filter830)"
-       inkscape:export-filename="C:\Users\RodrigoBestardPino\projects\rankio\public\isotipo.png"
-       inkscape:export-xdpi="96"
-       inkscape:export-ydpi="96" />
+     transform="translate(-110.55196,-72.125251)">
     <g
        id="g26"
-       transform="matrix(3.0295398,0,0,3.0295398,-973.63691,-5.3097846)"
+       transform="matrix(3.9272304,0,0,3.4469507,-1294.8957,-15.978807)"
        style="fill:#000000;fill-opacity:1;filter:url(#filter836)"
        inkscape:export-filename="C:\Users\RodrigoBestardPino\projects\rankio\public\isotipo.png"
        inkscape:export-xdpi="96"

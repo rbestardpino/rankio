@@ -1,58 +1,40 @@
 import {
   Card,
-  Grid,
-  CardMedia,
-  Typography,
-  Rating,
   CardActionArea,
-  Paper,
+  CardContent,
+  CardMedia,
   Divider,
+  Grid,
+  Rating,
+  Typography,
 } from "@mui/material";
 
-export default function Review({ review, noWrap, reviewPage }) {
+export default function Review({ review, reviewPage }) {
   return (
     <Card variant="elevation" elevation={5}>
       <CardActionArea
         href={`/${review.creator}/${review.id}`}
         disabled={reviewPage}
       >
-        <Grid container direction="row" columnSpacing={2}>
-          <Grid item xs height={reviewPage ? 270 : 170}>
-            <Card>
-              <CardMedia
-                height={reviewPage ? 270 : 170}
-                component="img"
-                image={review.image}
-                alt={`${review.title}'s poster`}
-              />
-            </Card>
-          </Grid>
-          <Grid
-            item
-            container
-            xs={10}
-            mt={0.5}
-            direction="column"
-            rowSpacing={1}
-            width={0}
-          >
-            <Grid item xs container direction="row">
+        <CardContent>
+          <Grid container direction="row" columnSpacing={2} rowSpacing={2}>
+            <Grid item xs>
+              <CardMedia component="img" image={review.image} />
+            </Grid>
+            <Grid item xs container direction="column" rowSpacing={2}>
               <Grid item xs>
-                <Typography variant="h6" noWrap={noWrap}>
-                  {review.title}
-                </Typography>
+                <Typography variant="h5">{review.title}</Typography>
+              </Grid>
+              <Grid item xs>
+                <Rating value={review.rating} max={10} readOnly size="medium" />
+              </Grid>
+              <Divider />
+              <Grid item xs>
+                <Typography variant="body1">{review.review}</Typography>
               </Grid>
             </Grid>
-            <Grid item xs>
-              <Rating value={review.rating} max={10} readOnly size="large" />
-            </Grid>
-            <Grid item xs container>
-              <Typography variant="body1" noWrap={noWrap}>
-                {review.review}
-              </Typography>
-            </Grid>
           </Grid>
-        </Grid>
+        </CardContent>
       </CardActionArea>
     </Card>
   );

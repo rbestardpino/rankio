@@ -1,5 +1,5 @@
 import Metatags from "@components/Metatags";
-import { Button, Typography, Container, Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 
 export default function Custom404() {
   return (

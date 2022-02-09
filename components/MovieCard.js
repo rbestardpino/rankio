@@ -1,15 +1,17 @@
 import {
   Card,
   CardActionArea,
-  CardMedia,
   CardContent,
+  CardMedia,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
 
 export default function MovieCard({ movie }) {
+  movie.original_title =
+    movie.language === "en" ? movie.original_title : movie.title;
   return (
-    <Link href={`/rate/${movie.id}`}>
+    <Link href={`/rate/${movie.id}`} passHref>
       <Card sx={{ width: 250 }} variant="outlined">
         <CardActionArea>
           <CardMedia

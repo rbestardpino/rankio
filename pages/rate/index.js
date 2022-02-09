@@ -1,9 +1,9 @@
 import Metatags from "@components/Metatags";
+import MovieCard from "@components/MovieCard";
 import NothingFound from "@components/NothingFound";
 import { getPopularMovies, searchMovies } from "@lib/services/tmdb";
-import { Container, Grid, Typography, TextField } from "@mui/material";
+import { Container, Grid, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import MovieCard from "@components/MovieCard";
 
 export async function getServerSideProps() {
   const movies = await getPopularMovies({});
@@ -47,6 +47,7 @@ export default function Rate({ movies }) {
               variant="outlined"
               fullWidth
               label="Search movie"
+              helperText={"Powered by TMDB ®️"}
               onChange={handleChange}
             />
           </Grid>

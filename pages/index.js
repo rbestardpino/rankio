@@ -1,21 +1,29 @@
 import Metatags from "@components/Metatags";
-import { Button, Container, Grid, Typography } from "@mui/material";
-import { RateReview } from "@mui/icons-material";
-import ReviewsList from "@components/ReviewsList";
 import MovieCard from "@components/MovieCard";
-import posternotfound from "../public/posternotfound.png";
+import ReviewsList from "@components/ReviewsList";
+import { getTopMovies } from "@lib/services/tmdb";
+import { RateReview } from "@mui/icons-material";
+import { Button, Container, Grid, Typography } from "@mui/material";
+import { useState } from "react";
 
-export default function Home() {
+export async function getStaticProps() {
+  const recommendedMovies = await getTopMovies({});
+  return {
+    props: { recommendedMovies },
+  };
+}
+
+export default function Home({ recommendedMovies }) {
   return (
     <main>
       <Metatags />
-      <Container sx={{ mt: 4 }}>
+      <Container sx={{ my: 4 }}>
         <Grid container direction="row" columnSpacing={5} rowSpacing={5}>
           <Grid item xs={12} md={8}>
             <YourReviews></YourReviews>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Recommendation />
+            <Recommendation recommendedMovies={recommendedMovies} />
           </Grid>
         </Grid>
       </Container>
@@ -23,19 +31,31 @@ export default function Home() {
   );
 }
 
-function Recommendation() {
+function Recommendation({ recommendedMovies }) {
+  const [index, setIndex] = useState(0);
+
+  const handleNext = () => {
+    if (index === recommendedMovies.length - 1) setIndex(0);
+    else setIndex(index + 1);
+  };
+
   return (
     <Grid container direction="column" rowSpacing={3}>
       <Grid item xs>
         <Typography variant="h5">What to see next</Typography>
       </Grid>
       <Grid item xs container alignContent="start" justifyContent="center">
-        <MovieCard
-          movie={{
-            image: posternotfound.src,
-            original_title: "Recommendation",
-          }}
-        ></MovieCard>
+        <MovieCard movie={recommendedMovies[index]}></MovieCard>
+      </Grid>
+      <Grid item xs textAlign="center">
+        <Button
+          variant="outlined"
+          fullWidth
+          color="inherit"
+          onClick={handleNext}
+        >
+          Next recommendation
+        </Button>
       </Grid>
     </Grid>
   );

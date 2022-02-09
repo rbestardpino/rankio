@@ -1,33 +1,26 @@
-import { useContext, useState } from "react";
-import { useRouter } from "next/router";
 import { UserContext } from "@lib/context";
 import { signOut } from "@lib/services/auth";
 import {
-  Badge,
-  Avatar,
   AppBar,
+  Avatar,
   Box,
-  Toolbar,
-  Typography,
   Button,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
-  Divider,
+  Toolbar,
 } from "@mui/material/";
-import { NotificationsActiveOutlined } from "@mui/icons-material/";
-import Link from "next/link";
 import Image from "next/image";
-import isotipo from "../public/isotipo-inverted.png";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useContext, useState } from "react";
+import isotipo from "../public/123.svg";
 
 export default function Navbar() {
   const { user, username } = useContext(UserContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const { asPath } = useRouter();
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,9 +34,9 @@ export default function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Link href="/">
+          <Link href="/" passHref>
             <Box component="div" sx={{ flexGrow: 1 }}>
-              <Image src={isotipo} height={50} width={50} />
+              <Image src={isotipo} height={50} width={50} alt="logo" />
             </Box>
           </Link>
           {/* user is signed-in and has username */}
@@ -66,20 +59,28 @@ export default function Navbar() {
                   vertical: "bottom",
                   horizontal: "right",
                 }}
-                keepMounted
                 transformOrigin={{
                   vertical: "top",
                   horizontal: "right",
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                MenuListProps={{ onMouseLeave: handleClose }}
               >
-                <Link href={`/${username}`}>
+                {/* <Link href={`/${username}`} passHref>
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
                 </Link>
-                <MenuItem onClick={handleClose}>Settings</MenuItem>
+                <MenuItem onClick={handleClose}>Settings</MenuItem> */}
+                <MenuItem onClick={handleClose}>{username}</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={signOut} dense sx={{ color: "#a2b223" }}>
+                <MenuItem
+                  onClick={async () => {
+                    handleClose();
+                    await signOut();
+                  }}
+                  dense
+                  sx={{ color: "#a2b223" }}
+                >
                   Sign out
                 </MenuItem>
               </Menu>
@@ -88,7 +89,7 @@ export default function Navbar() {
 
           {/* user is not signed OR has not created username */}
           {!username && asPath !== "/login" && (
-            <Link href="/login">
+            <Link href="/login" passHref>
               <Button variant="outlined" color="inherit">
                 Login
               </Button>
