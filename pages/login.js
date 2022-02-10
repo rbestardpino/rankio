@@ -127,11 +127,11 @@ function UsernameForm() {
 
   return (
     <Box component="form" onSubmit={onSubmit} autoComplete="off">
-      <Grid container mt={1} spacing={4} columns={1}>
-        <Grid item xs={12} textAlign="center">
+      <Grid container mt={1} spacing={4} direction="column">
+        <Grid item xs textAlign="center">
           <Typography variant="h4">Choose an username</Typography>
         </Grid>
-        <Grid item xs={12} textAlign="center" sx={{ mx: 50 }}>
+        <Grid item xs textAlign="center" sx={{ mx: 50 }}>
           <TextField
             autoFocus
             color={isValid ? "success" : "error"}
@@ -144,7 +144,7 @@ function UsernameForm() {
             onChange={onChange}
           />
         </Grid>
-        <Grid item xs={12} textAlign="center">
+        <Grid item xs textAlign="center">
           <Button
             disabled={!isValid}
             color="success"

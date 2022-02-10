@@ -1,5 +1,5 @@
 import Head from "next/head";
-import img from "../public/favicon-inverted.ico";
+import img from "../public/isotipo.png";
 
 export default function Metatags({
   title = "RankIO",

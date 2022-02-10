@@ -1,13 +1,7 @@
 import Metatags from "@components/Metatags";
 import Review from "@components/Review";
 import { UserContext } from "@lib/context";
-import {
-  getReview,
-  getReviewsOf,
-  getUsernames,
-  getUserWithUsername,
-  usernameToUID,
-} from "@lib/services/db";
+import { getReview, usernameToUID } from "@lib/services/db";
 import {
   FacebookOutlined,
   RateReview,
@@ -63,6 +57,7 @@ export default function ReviewPage({ username, review }) {
       <Metatags
         title="Review | RankIO"
         description={`${username}'s review of ${review.title}`}
+        image={review.image}
       />
       <Container sx={{ my: 3 }}>
         <Grid container direction="column" rowSpacing={3}>

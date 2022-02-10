@@ -63,6 +63,7 @@ export default function RateMovie({ movie }) {
       <Metatags
         title={`Rate ${movie.original_title} | RankIO`}
         description={`Rate ${movie.original_title} | RankIO`}
+        image={movie.image}
       ></Metatags>
       <Container sx={{ mt: 3, mb: 3 }}>
         <Grid container columnSpacing={3} rowSpacing={3}>
