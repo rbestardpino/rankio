@@ -49,13 +49,13 @@ export default function RateMovie({ movie }) {
         rating: rating,
         image: movie.image,
         title: movie.original_title,
-        creator: username,
+        author: username,
       },
       user.uid,
       movie.id
     );
     toast.success("Review saved", { icon: "🌟" });
-    router.push("/");
+    router.push(`/${username}/${movie.id}`);
   };
 
   return (

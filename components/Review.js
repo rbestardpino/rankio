@@ -14,7 +14,7 @@ export default function Review({ review, reviewPage }) {
   return (
     <Card variant="elevation" elevation={5}>
       <CardActionArea
-        href={`/${review.creator}/${review.id}`}
+        href={`/${review.author}/${review.id}`}
         disabled={reviewPage}
       >
         <CardContent>
