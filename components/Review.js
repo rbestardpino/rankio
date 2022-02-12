@@ -5,6 +5,7 @@ import {
   CardMedia,
   Divider,
   Grid,
+  Paper,
   Rating,
   Typography,
 } from "@mui/material";
@@ -26,7 +27,12 @@ export default function Review({ review, reviewPage }) {
                 <Typography variant="h5">{review.title}</Typography>
               </Grid>
               <Grid item xs>
-                <Rating value={review.rating} max={10} readOnly size="medium" />
+                <Rating
+                  value={parseInt(review.rating)}
+                  max={10}
+                  readOnly
+                  size="medium"
+                />
               </Grid>
               <Divider />
               <Grid item xs>
