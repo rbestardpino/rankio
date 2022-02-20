@@ -1,5 +1,6 @@
 import AuthCheck from "@components/AuthCheck";
 import Metatags from "@components/Metatags";
+import RatingSlider from "@components/RatingSlider";
 import { UserContext } from "@lib/context";
 import { saveReview } from "@lib/services/db";
 import { getMovie } from "@lib/services/tmdb";
@@ -14,6 +15,7 @@ import {
   Rating,
   TextField,
   Typography,
+  Slider,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
@@ -90,20 +92,17 @@ export default function RateMovie({ movie }) {
               </Typography>
             </Grid>
             <Grid item xs>
-              {/* TODO: change to slider */}
-              <Rating
-                size="large"
-                max={10}
+              <RatingSlider
                 value={rating}
                 onChange={(event) => {
                   setRating(event.target.value);
                 }}
               />
-              {rating !== null && <Box>{`${rating}/10`}</Box>}
             </Grid>
             <Grid item xs>
               <TextField
                 autoComplete="off"
+                color="white"
                 fullWidth
                 multiline
                 autoFocus

@@ -2,7 +2,7 @@ import Metatags from "@components/Metatags";
 import MovieCard from "@components/MovieCard";
 import NothingFound from "@components/NothingFound";
 import { getPopularMovies, searchMovies } from "@lib/services/tmdb";
-import { Container, Grid, TextField, Typography } from "@mui/material";
+import { Box, Container, Grid, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 
 export async function getServerSideProps() {
@@ -43,13 +43,16 @@ export default function Rate({ movies }) {
             </Typography>
           </Grid>
           <Grid item xs>
-            <TextField
-              variant="outlined"
-              fullWidth
-              label="Search movie"
-              helperText={"Powered by TMDB ®️"}
-              onChange={handleChange}
-            />
+            <Box component="form" autoComplete="off">
+              <TextField
+                variant="outlined"
+                fullWidth
+                label="Search movie"
+                helperText={"Powered by TMDB ®️"}
+                onChange={handleChange}
+                color="white"
+              />
+            </Box>
           </Grid>
           <Grid item xs>
             <Typography variant="subtitle2">

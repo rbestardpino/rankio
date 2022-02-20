@@ -33,6 +33,7 @@ export default function ReviewsList() {
                 variant="outlined"
                 fullWidth
                 autoFocus
+                color="white"
                 focused={false}
                 label="Search review"
                 onChange={handleSearch}
