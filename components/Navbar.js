@@ -1,21 +1,19 @@
 import { UserContext } from "@lib/context";
 import { signOut } from "@lib/services/auth";
-import {
-  AppBar,
-  Avatar,
-  Box,
-  Button,
-  Divider,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-} from "@mui/material/";
+import AppBar from "@mui/material/AppBar";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Toolbar from "@mui/material/Toolbar";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import isotipo from "../public/123.svg";
+import isotipo from "../public/isotipo.svg";
 
 export default function Navbar() {
   const { user, username } = useContext(UserContext);

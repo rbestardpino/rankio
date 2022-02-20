@@ -1,4 +1,4 @@
-import { Slider, Box } from "@mui/material";
+import Slider from "@mui/material/Slider";
 
 export default function RatingSlider({ value, onChange, readOnly }) {
   // TODO: make this user customizable

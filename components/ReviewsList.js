@@ -1,7 +1,9 @@
 import AuthCheck from "@components/AuthCheck";
 import Review from "@components/Review";
 import { UserContext } from "@lib/context";
-import { Autocomplete, Grid, TextField } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import { useContext, useState } from "react";
 import NothingFound from "./NothingFound";
 

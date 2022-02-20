@@ -4,19 +4,15 @@ import RatingSlider from "@components/RatingSlider";
 import { UserContext } from "@lib/context";
 import { saveReview } from "@lib/services/db";
 import { getMovie } from "@lib/services/tmdb";
-import { RateReview } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Card,
-  CardMedia,
-  Container,
-  Grid,
-  Rating,
-  TextField,
-  Typography,
-  Slider,
-} from "@mui/material";
+import RateReview from "@mui/icons-material/RateReview";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";

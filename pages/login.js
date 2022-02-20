@@ -7,8 +7,14 @@ import {
   getUserDoc,
   getUsernamesDoc,
 } from "@lib/services/db";
-import { ErrorOutline, Google, SendOutlined } from "@mui/icons-material";
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import ErrorOutline from "@mui/icons-material/ErrorOutline";
+import Google from "@mui/icons-material/Google";
+import SendOutlined from "@mui/icons-material/SendOutlined";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";

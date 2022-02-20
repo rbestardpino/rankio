@@ -3,7 +3,10 @@ import MovieCard from "@components/MovieCard";
 import ReviewsList from "@components/ReviewsList";
 import { getTopMovies } from "@lib/services/tmdb";
 import { RateReview } from "@mui/icons-material";
-import { Button, Container, Grid, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import { useState } from "react";
 
 export async function getStaticProps() {
@@ -42,7 +45,7 @@ function Recommendation({ recommendedMovies }) {
   return (
     <Grid container direction="column" rowSpacing={3}>
       <Grid item xs>
-        <Typography variant="h5">What to see next</Typography>
+        <Typography variant="h5">Top movies</Typography>
       </Grid>
       <Grid item xs container alignContent="start" justifyContent="center">
         <MovieCard movie={recommendedMovies[index]}></MovieCard>
@@ -54,7 +57,7 @@ function Recommendation({ recommendedMovies }) {
           color="inherit"
           onClick={handleNext}
         >
-          Next recommendation
+          Next
         </Button>
       </Grid>
     </Grid>

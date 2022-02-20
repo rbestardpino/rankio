@@ -1,6 +1,7 @@
 import Metatags from "@components/Metatags";
 import { UserContext } from "@lib/context";
-import { Container, Typography } from "@mui/material";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 
 // TODO: whole page

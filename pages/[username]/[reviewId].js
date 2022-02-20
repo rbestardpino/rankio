@@ -3,20 +3,21 @@ import Review from "@components/Review";
 import { UserContext } from "@lib/context";
 import {
   getReview,
-  usernameToUID,
+  getReviewsOf,
   getUsernames,
   getUserWithUsername,
-  getReviewsOf,
+  usernameToUID,
 } from "@lib/services/db";
-import {
-  FacebookOutlined,
-  RateReview,
-  Reddit,
-  Telegram,
-  Twitter,
-  WhatsappOutlined,
-} from "@mui/icons-material";
-import { Button, Container, Grid, Typography } from "@mui/material";
+import FacebookOutlined from "@mui/icons-material/FacebookOutlined";
+import RateReview from "@mui/icons-material/RateReview";
+import Reddit from "@mui/icons-material/Reddit";
+import Telegram from "@mui/icons-material/Telegram";
+import Twitter from "@mui/icons-material/Twitter";
+import WhatsappOutlined from "@mui/icons-material/WhatsappOutlined";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 import {
   FacebookShareButton,

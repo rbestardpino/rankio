@@ -2,7 +2,11 @@ import Metatags from "@components/Metatags";
 import MovieCard from "@components/MovieCard";
 import NothingFound from "@components/NothingFound";
 import { getPopularMovies, searchMovies } from "@lib/services/tmdb";
-import { Box, Container, Grid, TextField, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useState } from "react";
 
 export async function getServerSideProps() {
