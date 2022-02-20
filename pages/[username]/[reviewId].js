@@ -77,14 +77,7 @@ export default function ReviewPage({ username, review }) {
         <Grid container direction="column" rowSpacing={3}>
           <Grid item xs container direction="row" columnSpacing={2}>
             <Grid item xs={5}>
-              <Typography variant="h4">
-                {cUsername === username
-                  ? "Your "
-                  : `${
-                      username.charAt(0).toUpperCase() + username.slice(1)
-                    }'s `}
-                review
-              </Typography>
+              <Typography variant="h4">Review</Typography>
             </Grid>
 
             <Grid item xs={7} textAlign="right">
@@ -115,7 +108,7 @@ export default function ReviewPage({ username, review }) {
               <WhatsappShareButton
                 url={shareURL}
                 title={shareTitle}
-                separator=":: "
+                separator=" "
               >
                 <WhatsappOutlined />
               </WhatsappShareButton>
