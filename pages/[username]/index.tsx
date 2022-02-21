@@ -40,13 +40,13 @@ export default function UserProfile() {
   return (
     <main>
       <Metatags
-        title={`${user!.username} | RankIO`}
-        description={`${user!.username}'s public profile`}
-        image={user!.photoURL}
+        title={`${user?.username} | RankIO`}
+        description={`${user?.username}'s public profile`}
+        image={user?.photoURL}
       ></Metatags>
       <Container sx={{ my: 4 }}>
-        <Typography variant="h5">Name: {user!.displayName}</Typography>
-        <Typography variant="h5">Username: {user!.username}</Typography>
+        <Typography variant="h5">Name: {user?.displayName}</Typography>
+        <Typography variant="h5">Username: {user?.username}</Typography>
         <Typography variant="h5">Reviews: {JSON.stringify(reviews)}</Typography>
       </Container>
     </main>
