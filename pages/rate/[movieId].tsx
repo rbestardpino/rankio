@@ -2,7 +2,7 @@ import AuthCheck from "@components/AuthCheck";
 import Metatags from "@components/Metatags";
 import RatingSlider from "@components/RatingSlider";
 import { UserContext } from "@lib/context";
-import { Movie, Review, reviewToFirestore } from "@lib/models";
+import { defaultReview, Movie, reviewToFirestore } from "@lib/models";
 import { db } from "@lib/services/firebase";
 import { getMovie } from "@lib/services/tmdb";
 import RateReview from "@mui/icons-material/RateReview";
@@ -50,7 +50,7 @@ export default function RateMovie({ movie }: Props) {
   const handleSubmit = async () => {
     const reviewRef = doc(db, `users/${user!.uid}/reviews/${movie.id}`);
 
-    const data: Review = {
+    const data = defaultReview({
       movie: {
         id: movie.id,
         title: movie.title,
@@ -60,8 +60,7 @@ export default function RateMovie({ movie }: Props) {
       review: review,
       author: user!.username,
       id: movie.id,
-      createdAt: 0,
-    };
+    });
 
     await setDoc(reviewRef, {
       ...reviewToFirestore(data),

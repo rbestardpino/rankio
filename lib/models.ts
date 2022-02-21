@@ -36,6 +36,48 @@ export interface Movie {
   image: string;
 }
 
+// instantiator with defaults
+export function defaultUser(
+  user: Pick<User, "uid" | "username" | "displayName" | "photoURL">
+): User {
+  return {
+    uid: user.uid,
+    username: user.username,
+    displayName: user.displayName,
+    photoURL: user.photoURL,
+    preferences: {
+      ratingSystem: "tierlist",
+      tierlistNames: {
+        1: "Unwatchable",
+        2: "Awful",
+        3: "Bad",
+        4: "Good",
+        5: "Great",
+        6: "Excellent",
+        7: "Masterpiece",
+      },
+    },
+    bio: "",
+  };
+}
+
+export function defaultReview(
+  review: Pick<Review, "author" | "id" | "movie" | "rating" | "review">
+): Review {
+  return {
+    movie: {
+      id: review.movie.id,
+      title: review.movie.title,
+      image: review.movie.image,
+    },
+    rating: review.rating,
+    review: review.review,
+    author: review.author,
+    id: review.movie.id,
+    createdAt: 0,
+  };
+}
+
 // converters
 export function movieFromJSON(movie: any): Movie {
   return {

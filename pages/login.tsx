@@ -1,6 +1,6 @@
 import Metatags from "@components/Metatags";
 import { UserContext } from "@lib/context";
-import { User, userToFirestore } from "@lib/models";
+import { defaultUser, User, userToFirestore } from "@lib/models";
 import { auth, db } from "@lib/services/firebase";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import Google from "@mui/icons-material/Google";
@@ -89,26 +89,13 @@ function UsernameForm() {
     // Commit both docs together as a batch write.
     const batch = writeBatch(db);
 
-    const data: User = {
+    const user = defaultUser({
       username: username,
       uid: fUser!.uid,
       displayName: fUser!.displayName!,
       photoURL: fUser!.photoURL!,
-      preferences: {
-        ratingSystem: "tierlist",
-        tierlistNames: {
-          1: "Unwatchable",
-          2: "Awful",
-          3: "Bad",
-          4: "Good",
-          5: "Great",
-          6: "Excellent",
-          7: "Masterpiece",
-        },
-      },
-      bio: "",
-    };
-    batch.set(userDoc, userToFirestore(data));
+    });
+    batch.set(userDoc, userToFirestore(user));
     batch.set(usernameDoc, { uid: fUser!.uid });
 
     await batch.commit();
