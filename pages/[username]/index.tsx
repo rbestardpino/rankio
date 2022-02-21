@@ -6,7 +6,14 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { useContext } from "react";
 import { db } from "@lib/services/firebase";
-import { query, collection, getDocs, doc, getDoc } from "firebase/firestore";
+import {
+  query,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  where,
+} from "firebase/firestore";
 import {
   Review,
   reviewFromFirestore,
@@ -21,7 +28,13 @@ interface Params extends ParsedUrlQuery {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { username } = context.params as Params;
 
-  const user = userFromFirestore(await getDoc(doc(db, `users/${username}`)));
+  const user = userFromFirestore(
+    (
+      await getDocs(
+        query(collection(db, "users"), where("username", "==", username))
+      )
+    ).docs[0]
+  );
 
   if (!user)
     return {
