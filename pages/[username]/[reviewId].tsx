@@ -14,11 +14,8 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import {
-  collection,
-  doc,
-  getDoc,
+  collectionGroup,
   getDocs,
-  limit,
   orderBy,
   query,
   where,
@@ -42,17 +39,13 @@ interface Params extends ParsedUrlQuery {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { username: author, reviewId } = context.params as Params;
 
-  const usernameDoc = await getDoc(doc(db, "usernames", author));
-  const uid = usernameDoc.exists() ? usernameDoc.data().uid : null;
+  const reviewsSnap = await getDocs(
+    query(collectionGroup(db, "reviews"), where("author", "==", author))
+  );
 
-  if (!uid)
-    return {
-      notFound: true,
-    };
+  const reviewDoc = reviewsSnap.docs.find((doc) => doc.id === reviewId);
 
-  const reviewDoc = await getDoc(doc(db, `users/${uid}/reviews/${reviewId}`));
-
-  if (!reviewDoc.exists())
+  if (!reviewDoc)
     return {
       notFound: true,
     };
@@ -66,50 +59,17 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const reviewsSnap = await getDocs(query(collectionGroup(db, "reviews")));
+  const reviewsSnap = await getDocs(query(collectionGroup(db, "reviews")));
 
-  // const paths = [];
-  // reviewsSnap.forEach((reviewDoc) => {
-  //   paths.push({
-  //     params: {
-  //       author: reviewDoc.data().author,
-  //       reviewId: reviewDoc.id,
-  //     },
-  //   });
-  // });
-  // Optimized version ^^^^ make the same with getStaticProps
-
-  const qSnap = await getDocs(query(collection(db, "usernames")));
-  const usernames: string[] = qSnap.docs.map((doc) => doc.id);
-
-  const paths = [];
-  for (const username of usernames) {
-    const userDoc = (
-      await getDocs(
-        query(
-          collection(db, "users"),
-          where("username", "==", username),
-          limit(1)
-        )
-      )
-    ).docs[0];
-
-    const reviewsSnap = await getDocs(
-      query(
-        collection(db, `users/${userDoc.id}/reviews`),
-        orderBy("createdAt", "desc")
-      )
-    );
-    const reviews: IReview[] = reviewsSnap.empty
-      ? []
-      : reviewsSnap.docs.map(reviewFromFirestore);
-
-    if (!reviews.length) continue;
-
-    for (const rev of reviews) {
-      paths.push({ params: { username: username, reviewId: rev.id } });
-    }
-  }
+  const paths: { params: { username: string; reviewId: string } }[] = [];
+  reviewsSnap.forEach((reviewDoc) => {
+    paths.push({
+      params: {
+        username: reviewDoc.data().author,
+        reviewId: reviewDoc.id,
+      },
+    });
+  });
 
   return {
     paths: paths,
