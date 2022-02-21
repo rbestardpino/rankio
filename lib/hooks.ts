@@ -1,4 +1,9 @@
-import { reviewToJSON } from "@lib/services/db";
+import {
+  Review,
+  reviewFromFirestore,
+  User,
+  userFromFirestore,
+} from "@lib/models";
 import { auth, db } from "@lib/services/firebase";
 import {
   collection,
@@ -10,41 +15,41 @@ import {
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-// Custom hook to read auth record and user profile doc and user reviews
+// Custom hook to read auth record, user profile doc and user reviews
 export function useUserData() {
-  const [user] = useAuthState(auth);
-  const [reviews, setReviews] = useState([]);
-  const [username, setUsername] = useState(null);
+  const [fUser] = useAuthState(auth);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     // turn off realtime subscription
     let unsubscribe;
 
-    if (user) {
-      const ref = doc(db, "users", user.uid);
+    if (fUser) {
+      const ref = doc(db, "users", fUser.uid);
       unsubscribe = onSnapshot(ref, (doc) => {
-        setUsername(doc.data()?.username);
+        setUser(userFromFirestore(doc));
       });
     } else {
-      setUsername(null);
+      setUser(null);
     }
 
     return unsubscribe;
-  }, [user]);
+  }, [fUser]);
 
   useEffect(() => {
     // turn off realtime subscription
     let unsubscribe;
 
-    if (user) {
+    if (fUser) {
       const q = query(
-        collection(db, `users/${user.uid}/reviews`),
+        collection(db, `users/${fUser.uid}/reviews`),
         orderBy("createdAt", "desc")
       );
       unsubscribe = onSnapshot(q, (snap) => {
-        const _reviews = [];
+        const _reviews: Review[] = [];
         snap.forEach((doc) => {
-          _reviews.push(reviewToJSON(doc));
+          _reviews.push(reviewFromFirestore(doc));
         });
         setReviews(_reviews);
       });
@@ -53,7 +58,7 @@ export function useUserData() {
     }
 
     return unsubscribe;
-  }, [user]);
+  }, [fUser]);
 
-  return { user, username, reviews };
+  return { fUser, user, reviews };
 }

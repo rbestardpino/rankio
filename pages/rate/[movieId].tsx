@@ -2,7 +2,8 @@ import AuthCheck from "@components/AuthCheck";
 import Metatags from "@components/Metatags";
 import RatingSlider from "@components/RatingSlider";
 import { UserContext } from "@lib/context";
-import { saveReview } from "@lib/services/db";
+import { Movie, Review, reviewToFirestore } from "@lib/models";
+import { db } from "@lib/services/firebase";
 import { getMovie } from "@lib/services/tmdb";
 import RateReview from "@mui/icons-material/RateReview";
 import Box from "@mui/material/Box";
@@ -13,21 +14,30 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 
-export async function getServerSideProps({ query: urlQuery }) {
-  const { movieId } = urlQuery;
-  const movie = await getMovie(movieId);
-  return {
-    props: { movie: movie },
-  };
+interface Params extends ParsedUrlQuery {
+  movieId: string;
 }
 
-export default function RateMovie({ movie }) {
-  const { user, reviews, username } = useContext(UserContext);
-  // FIXME: why existing review doesnt work!!!
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { movieId } = context.params as Params;
+  return {
+    props: { movie: await getMovie(movieId, {}) },
+  };
+};
+
+interface Props {
+  movie: Movie;
+}
+
+export default function RateMovie({ movie }: Props) {
+  const { user, reviews } = useContext(UserContext);
   const existingReview = reviews.find((rev) => rev.id === movie.id);
   const [rating, setRating] = useState(
     existingReview ? existingReview.rating : 5
@@ -37,40 +47,46 @@ export default function RateMovie({ movie }) {
   );
   const router = useRouter();
 
-  movie.original_title =
-    movie.language === "en" ? movie.original_title : movie.title;
-
   const handleSubmit = async () => {
-    await saveReview(
-      {
-        review: review,
-        rating: rating,
+    const reviewRef = doc(db, `users/${user!.uid}/reviews/${movie.id}`);
+
+    const data: Review = {
+      movie: {
+        id: movie.id,
+        title: movie.title,
         image: movie.image,
-        title: movie.original_title,
-        author: username,
       },
-      user.uid,
-      movie.id
-    );
+      rating: rating,
+      review: review,
+      author: user!.username,
+      id: movie.id,
+      createdAt: 0,
+    };
+
+    await setDoc(reviewRef, {
+      ...reviewToFirestore(data),
+      createdAt: serverTimestamp(),
+    });
+
     toast.success("Review saved", { icon: "🌟" });
-    router.push(`/${username}/${movie.id}`);
+    router.push(`/${user!.username}/${movie.id}`);
   };
 
   return (
     <main>
       <Metatags
-        title={`Rate ${movie.original_title} | RankIO`}
-        description={`Rate ${movie.original_title} | RankIO`}
+        title={`Rate ${movie.title} | RankIO`}
+        description={`Rate ${movie.title} | RankIO`}
         image={movie.image}
       ></Metatags>
-      <Container sx={{ mt: 3, mb: 3 }}>
+      <Container sx={{ my: 3 }}>
         <Grid container columnSpacing={3} rowSpacing={3}>
           <Grid item xs={12} lg={3}>
             <Card sx={{ width: 250 }} variant="outlined">
               <CardMedia
                 component="img"
                 image={movie.image}
-                alt={`${movie.original_title}'s poster`}
+                alt={`${movie.title}'s poster`}
               />
             </Card>
           </Grid>
@@ -83,22 +99,20 @@ export default function RateMovie({ movie }) {
                   fontStyle="italic"
                   display="inline"
                 >
-                  {movie.original_title}
+                  {movie.title}
                 </Box>
               </Typography>
             </Grid>
             <Grid item xs>
               <RatingSlider
                 value={rating}
-                onChange={(event) => {
-                  setRating(event.target.value);
-                }}
+                onChange={(_, value) => setRating(value as number)}
               />
             </Grid>
             <Grid item xs>
               <TextField
                 autoComplete="off"
-                color="white"
+                color="secondary"
                 fullWidth
                 multiline
                 autoFocus

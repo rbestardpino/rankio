@@ -1,20 +1,22 @@
 import AuthCheck from "@components/AuthCheck";
+import NothingFound from "@components/NothingFound";
 import Review from "@components/Review";
 import { UserContext } from "@lib/context";
+import { Review as IReview } from "@lib/models";
 import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { useContext, useState } from "react";
-import NothingFound from "./NothingFound";
 
 export default function ReviewsList() {
   const { reviews } = useContext(UserContext);
-  const [filteredReviews, setFilteredReviews] = useState(reviews);
+  const [filteredReviews, setFilteredReviews] = useState<IReview[]>(reviews);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
+    e.preventDefault();
     setFilteredReviews(
       reviews.filter((rev) =>
-        rev.title.toLowerCase().includes(e.target.value.toLowerCase())
+        rev.movie.title.toLowerCase().includes(e.target.value.toLowerCase())
       )
     );
   };
@@ -28,14 +30,14 @@ export default function ReviewsList() {
             freeSolo
             clearOnEscape
             disableClearable
-            options={reviews.map((rev) => rev.title)}
+            options={reviews.map((rev) => rev.movie.title)}
             renderInput={(params) => (
               <TextField
                 {...params}
                 variant="outlined"
                 fullWidth
                 autoFocus
-                color="white"
+                color="secondary"
                 focused={false}
                 label="Search review"
                 onChange={handleSearch}

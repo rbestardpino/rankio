@@ -1,4 +1,5 @@
-import notfoundposter from "../../public/posternotfound.png";
+import { Movie, movieFromJSON } from "@lib/models";
+import notfoundposter from "@public/posternotfound.png";
 
 const CONFIG = {
   api_key: "fc38338f58588b810badb2febb318cf1",
@@ -9,8 +10,8 @@ const CONFIG = {
   poster_not_found: notfoundposter.src,
 };
 
-function generateQuery(options) {
-  var myOptions, query, option;
+function generateQuery(options: any): string {
+  let myOptions, query: string, option;
 
   myOptions = options || {};
   query = "?api_key=" + CONFIG.api_key + "&language=" + CONFIG.language;
@@ -29,43 +30,43 @@ function generateQuery(options) {
   return query;
 }
 
-async function getData(slug, options) {
-  const url = CONFIG.base_uri + slug + generateQuery(options);
+async function getData(slug: string, options: any): Promise<any> {
+  const url: string = CONFIG.base_uri + slug + generateQuery(options);
   return await (await fetch(url)).json();
 }
 
-function addImage(movie) {
+function addImage(movie: any): any {
   movie.image = movie.poster_path
     ? CONFIG.images_uri + movie.poster_path
     : CONFIG.poster_not_found;
   return movie;
 }
 
-export async function getPopularMovies(options) {
+export async function getPopularMovies(options: any): Promise<Movie[]> {
   const data = await getData("movie/popular", options);
-  const movies = data.results;
+  const movies: any[] = data.results;
   movies.forEach(addImage);
-  return movies;
+  return movies.map(movieFromJSON);
 }
 
-export async function getMovie(id, options) {
-  let movie = await getData(`movie/${id}`, options);
+export async function getMovie(id: string, options: any): Promise<Movie> {
+  let movie: any = await getData(`movie/${id}`, options);
 
   movie = addImage(movie);
 
-  return movie;
+  return movieFromJSON(movie);
 }
 
-export async function searchMovies(options) {
+export async function searchMovies(options: any): Promise<Movie[]> {
   const data = await getData("search/movie", options);
-  const movies = data.results;
+  const movies: any[] = data.results;
   movies.forEach(addImage);
-  return movies;
+  return movies.map(movieFromJSON);
 }
 
-export async function getTopMovies(options) {
+export async function getTopMovies(options: any): Promise<Movie[]> {
   const data = await getData("movie/top_rated", options);
-  const movies = data.results;
+  const movies: any[] = data.results;
   movies.forEach(addImage);
-  return movies;
+  return movies.map(movieFromJSON);
 }

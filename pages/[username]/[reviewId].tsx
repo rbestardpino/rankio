@@ -1,13 +1,8 @@
 import Metatags from "@components/Metatags";
 import Review from "@components/Review";
 import { UserContext } from "@lib/context";
-import {
-  getReview,
-  getReviewsOf,
-  getUsernames,
-  getUserWithUsername,
-  usernameToUID,
-} from "@lib/services/db";
+import { Review as IReview, reviewFromFirestore } from "@lib/models";
+import { db } from "@lib/services/firebase";
 import FacebookOutlined from "@mui/icons-material/FacebookOutlined";
 import RateReview from "@mui/icons-material/RateReview";
 import Reddit from "@mui/icons-material/Reddit";
@@ -18,6 +13,18 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { ParsedUrlQuery } from "querystring";
 import { useContext } from "react";
 import {
   FacebookShareButton,
@@ -27,51 +34,105 @@ import {
   WhatsappShareButton,
 } from "react-share";
 
-export async function getStaticProps({ params }) {
-  const { username, reviewId } = params;
+interface Params extends ParsedUrlQuery {
+  username: string;
+  reviewId: string;
+}
 
-  const uid = await usernameToUID(username);
-  const review = await getReview(uid, reviewId);
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { username: author, reviewId } = context.params as Params;
 
-  if (!uid || !review) {
+  const usernameDoc = await getDoc(doc(db, "usernames", author));
+  const uid = usernameDoc.exists() ? usernameDoc.data().uid : null;
+
+  if (!uid)
     return {
       notFound: true,
     };
-  }
+
+  const reviewDoc = await getDoc(doc(db, `users/${uid}/reviews/${reviewId}`));
+
+  if (!reviewDoc.exists())
+    return {
+      notFound: true,
+    };
+
+  const review: IReview = reviewFromFirestore(reviewDoc);
+
   return {
-    props: { username, review },
+    props: { author, review },
     revalidate: 3600,
   };
-}
+};
 
-export async function getStaticPaths() {
-  const usernames = await getUsernames();
-  let paths = [];
+export const getStaticPaths: GetStaticPaths = async () => {
+  // const reviewsSnap = await getDocs(query(collectionGroup(db, "reviews")));
+
+  // const paths = [];
+  // reviewsSnap.forEach((reviewDoc) => {
+  //   paths.push({
+  //     params: {
+  //       author: reviewDoc.data().author,
+  //       reviewId: reviewDoc.id,
+  //     },
+  //   });
+  // });
+  // Optimized version ^^^^ make the same with getStaticProps
+
+  const qSnap = await getDocs(query(collection(db, "usernames")));
+  const usernames: string[] = qSnap.docs.map((doc) => doc.id);
+
+  const paths = [];
   for (const username of usernames) {
-    const userDoc = await getUserWithUsername(username);
-    const reviews = await getReviewsOf(userDoc.id);
-    if (!reviews) continue;
+    const userDoc = (
+      await getDocs(
+        query(
+          collection(db, "users"),
+          where("username", "==", username),
+          limit(1)
+        )
+      )
+    ).docs[0];
+
+    const reviewsSnap = await getDocs(
+      query(
+        collection(db, `users/${userDoc.id}/reviews`),
+        orderBy("createdAt", "desc")
+      )
+    );
+    const reviews: IReview[] = reviewsSnap.empty
+      ? []
+      : reviewsSnap.docs.map(reviewFromFirestore);
+
+    if (!reviews.length) continue;
+
     for (const rev of reviews) {
       paths.push({ params: { username: username, reviewId: rev.id } });
     }
   }
+
   return {
     paths: paths,
     fallback: "blocking",
   };
+};
+
+interface Props {
+  author: string;
+  review: IReview;
 }
 
-export default function ReviewPage({ username, review }) {
-  const { username: cUsername } = useContext(UserContext);
-  const shareURL = `https://rankio.bepi.tech/${username}/${review.id}`;
-  const shareTitle = `Check ${username}'s take on ${review.title}`;
+export default function ReviewPage({ author, review }: Props) {
+  const { user } = useContext(UserContext);
+  const shareURL = `https://rankio.bepi.tech/${author}/${review.id}`;
+  const shareTitle = `Check ${author}'s take on ${review.movie.title}`;
 
   return (
     <main>
       <Metatags
         title="Review | RankIO"
-        description={`${username}'s review of ${review.title}`}
-        image={review.image}
+        description={`${author}'s review of ${review.movie.title}`}
+        image={review.movie.image}
       />
       <Container sx={{ my: 3 }}>
         <Grid container direction="column" rowSpacing={3}>
@@ -87,7 +148,7 @@ export default function ReviewPage({ username, review }) {
                 startIcon={<RateReview />}
                 href={`/rate/${review.id}`}
               >
-                {cUsername === username ? "Edit" : "Make your own review"}
+                {user?.username === author ? "Edit" : "Make your own review"}
               </Button>
             </Grid>
           </Grid>

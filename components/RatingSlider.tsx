@@ -1,9 +1,18 @@
 import Slider from "@mui/material/Slider";
 
-export default function RatingSlider({ value, onChange, readOnly }) {
-  // TODO: make this user customizable
-  function getValueLabel(value) {
-    switch (value) {
+interface Props {
+  value: number;
+  onChange?: (
+    event: Event,
+    value: number | number[],
+    activeThumb: number
+  ) => void;
+  readOnly?: boolean;
+}
+
+export default function RatingSlider({ value, onChange, readOnly }: Props) {
+  function getValueLabel(val: number) {
+    switch (val) {
       case 1:
         return "Unwatchable";
       case 2:

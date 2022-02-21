@@ -1,5 +1,5 @@
 import { UserContext } from "@lib/context";
-import { signOut } from "@lib/services/auth";
+import { auth } from "@lib/services/firebase";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -9,20 +9,19 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
+import isotipo from "@public/isotipo.svg";
+import { signOut } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import isotipo from "../public/isotipo.svg";
 
 export default function Navbar() {
-  const { user, username } = useContext(UserContext);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const { user } = useContext(UserContext);
+  const [anchorEl, setAnchorEl] = useState<
+    Element | ((element: Element) => Element) | null | undefined
+  >(null);
   const { asPath } = useRouter();
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -37,18 +36,17 @@ export default function Navbar() {
               <Image src={isotipo} height={50} width={50} alt="logo" />
             </Box>
           </Link>
-          {/* user is signed-in and has username */}
-          {username && (
+          {user && (
             <div>
               <IconButton
                 size="large"
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
-                onClick={handleMenu}
+                onClick={(event) => setAnchorEl(event.currentTarget)}
                 color="inherit"
               >
-                <Avatar alt={user?.displayName} src={user?.photoURL} />
+                <Avatar alt={user.displayName} src={user.photoURL} />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -69,12 +67,12 @@ export default function Navbar() {
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
                 </Link>
                 <MenuItem onClick={handleClose}>Settings</MenuItem> */}
-                <MenuItem onClick={handleClose}>{username}</MenuItem>
+                <MenuItem onClick={handleClose}>{user.username}</MenuItem>
                 <Divider></Divider>
                 <MenuItem
                   onClick={async () => {
                     handleClose();
-                    await signOut();
+                    await signOut(auth);
                   }}
                   dense
                   sx={{ color: "#a2b223" }}
@@ -86,7 +84,7 @@ export default function Navbar() {
           )}
 
           {/* user is not signed OR has not created username */}
-          {!username && asPath !== "/login" && (
+          {!user && asPath !== "/login" && (
             <Link href="/login" passHref>
               <Button variant="outlined" color="inherit">
                 Login

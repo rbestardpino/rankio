@@ -1,11 +1,17 @@
+import img from "@public/isotipo.png";
 import Head from "next/head";
-import img from "../public/isotipo.png";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
 
 export default function Metatags({
   title = "RankIO",
   description = "A website to track your movies' reviews",
-  image = img,
-}) {
+  image = img.src,
+}: Props) {
   return (
     <Head>
       <title>{title}</title>

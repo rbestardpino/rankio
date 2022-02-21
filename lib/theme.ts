@@ -4,10 +4,20 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     mode: "dark",
-    white: {
+    secondary: {
       main: "#ffffff",
     },
   },
 });
 
 export default theme;
+
+// Modules
+declare module "@mui/material/Slider/Slider" {
+  interface SliderPropsColorOverrides {
+    error: true;
+    info: true;
+    success: true;
+    warning: true;
+  }
+}

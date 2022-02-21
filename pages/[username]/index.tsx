@@ -4,7 +4,6 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 
-// TODO: whole page
 // export async function getServerSideProps({ query: urlQuery }) {
 //   const { username } = urlQuery;
 
@@ -37,17 +36,17 @@ import { useContext } from "react";
 // }
 
 export default function UserProfile() {
-  const { user, username, reviews } = useContext(UserContext);
+  const { user, reviews } = useContext(UserContext);
   return (
     <main>
       <Metatags
-        title={`${username} | RankIO`}
-        description={`${username}'s public profile`}
-        image={user?.photoURL}
+        title={`${user!.username} | RankIO`}
+        description={`${user!.username}'s public profile`}
+        image={user!.photoURL}
       ></Metatags>
       <Container sx={{ my: 4 }}>
-        <Typography variant="h5">Name: {user?.displayName}</Typography>
-        <Typography variant="h5">Username: {username}</Typography>
+        <Typography variant="h5">Name: {user!.displayName}</Typography>
+        <Typography variant="h5">Username: {user!.username}</Typography>
         <Typography variant="h5">Reviews: {JSON.stringify(reviews)}</Typography>
       </Container>
     </main>

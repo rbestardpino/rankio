@@ -1,12 +1,17 @@
 import { UserContext } from "@lib/context";
 import Button from "@mui/material/Button";
-import { useContext } from "react";
+import { ReactElement, useContext } from "react";
+
+interface Props {
+  children: ReactElement;
+  fallback?: ReactElement;
+}
 
 // Component's children only shown to logged-in users
-export default function AuthCheck(props) {
-  const { username } = useContext(UserContext);
+export default function AuthCheck(props: Props) {
+  const { fUser } = useContext(UserContext);
 
-  return username
+  return fUser
     ? props.children
     : props.fallback || (
         <Button fullWidth href="/login" variant="outlined" color="warning">

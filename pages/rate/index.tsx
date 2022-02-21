@@ -1,13 +1,14 @@
 import Metatags from "@components/Metatags";
 import MovieCard from "@components/MovieCard";
 import NothingFound from "@components/NothingFound";
+import { Movie } from "@lib/models";
 import { getPopularMovies, searchMovies } from "@lib/services/tmdb";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { ChangeEventHandler, useState } from "react";
 
 export async function getServerSideProps() {
   const movies = await getPopularMovies({});
@@ -16,12 +17,18 @@ export async function getServerSideProps() {
   };
 }
 
-export default function Rate({ movies }) {
+interface Props {
+  movies: Movie[];
+}
+
+export default function Rate({ movies }: Props) {
   const [filteredMovies, setFilteredMovies] = useState(movies);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = async (e) => {
+  const handleChange: ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = async (e) => {
     e.preventDefault();
     const _input = e.target.value;
     if (!_input) setFilteredMovies(movies);
@@ -39,7 +46,7 @@ export default function Rate({ movies }) {
         title="Rate a movie | RankIO"
         description="Rate a movie | RankIO"
       />
-      <Container sx={{ mt: 3, mb: 3 }}>
+      <Container sx={{ my: 3 }}>
         <Grid container direction="column" rowSpacing={3}>
           <Grid item xs>
             <Typography variant="h3" mb={3}>
@@ -54,7 +61,7 @@ export default function Rate({ movies }) {
                 label="Search movie"
                 helperText={"Powered by TMDB ®️"}
                 onChange={handleChange}
-                color="white"
+                color="secondary"
               />
             </Box>
           </Grid>

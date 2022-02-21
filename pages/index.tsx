@@ -1,22 +1,28 @@
 import Metatags from "@components/Metatags";
 import MovieCard from "@components/MovieCard";
 import ReviewsList from "@components/ReviewsList";
+import { Movie } from "@lib/models";
 import { getTopMovies } from "@lib/services/tmdb";
 import { RateReview } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { GetStaticProps } from "next";
 import { useState } from "react";
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async () => {
   const recommendedMovies = await getTopMovies({});
   return {
     props: { recommendedMovies },
   };
+};
+
+interface Props {
+  recommendedMovies: Movie[];
 }
 
-export default function Home({ recommendedMovies }) {
+export default function Home({ recommendedMovies }: Props) {
   return (
     <main>
       <Metatags />
@@ -34,7 +40,7 @@ export default function Home({ recommendedMovies }) {
   );
 }
 
-function Recommendation({ recommendedMovies }) {
+function Recommendation({ recommendedMovies }: Props) {
   const [index, setIndex] = useState(0);
 
   const handleNext = () => {

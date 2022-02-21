@@ -1,7 +1,11 @@
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
-export default function NothingFound({ message }) {
+interface Props {
+  message: string;
+}
+
+export default function NothingFound({ message }: Props) {
   return (
     <>
       <Grid item xs textAlign="center">
@@ -11,7 +15,7 @@ export default function NothingFound({ message }) {
       </Grid>
       <Grid item xs textAlign="center">
         <iframe
-          src="https://giphy.com/embed/26hkhPJ5hmdD87HYA"
+          src="https://giphy.com/embed/g01ZnwAUvutuK8GIQn"
           width="200"
           height="200"
           frameBorder="0"

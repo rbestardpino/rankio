@@ -1,12 +1,7 @@
 import Metatags from "@components/Metatags";
 import { UserContext } from "@lib/context";
-import { signInWithGoogle } from "@lib/services/auth";
-import {
-  createBatch,
-  getSnap,
-  getUserDoc,
-  getUsernamesDoc,
-} from "@lib/services/db";
+import { User, userToFirestore } from "@lib/models";
+import { auth, db } from "@lib/services/firebase";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import Google from "@mui/icons-material/Google";
 import SendOutlined from "@mui/icons-material/SendOutlined";
@@ -15,15 +10,24 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { doc, getDoc, writeBatch } from "firebase/firestore";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import {
+  ChangeEventHandler,
+  FormEventHandler,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 export default function Login() {
-  const { user, username } = useContext(UserContext);
+  const { user, fUser } = useContext(UserContext);
   const router = useRouter();
 
-  if (user && username) {
+  if (user) {
     router.push("/");
   }
 
@@ -34,7 +38,7 @@ export default function Login() {
         description="Sign in to your RankIO account"
       ></Metatags>
 
-      {user && !username ? <UsernameForm /> : <SignIn />}
+      {fUser && !user ? <UsernameForm /> : <SignIn />}
     </main>
   );
 }
@@ -55,7 +59,9 @@ function SignIn() {
             size="large"
             variant="outlined"
             startIcon={<Google />}
-            onClick={signInWithGoogle}
+            onClick={async () =>
+              await signInWithPopup(auth, new GoogleAuthProvider())
+            }
           >
             JOIN
           </Button>
@@ -67,69 +73,85 @@ function SignIn() {
 
 // Username form
 function UsernameForm() {
-  const [formValue, setFormValue] = useState("");
+  const [username, setUsername] = useState("");
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { user } = useContext(UserContext);
+  const { fUser } = useContext(UserContext);
 
-  const onSubmit = async (e) => {
+  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
     // Create refs for both documents
-    const userDoc = getUserDoc(user.uid);
-    const usernameDoc = getUsernamesDoc(formValue);
+    const userDoc = doc(db, "users", fUser!.uid);
+    const usernameDoc = doc(db, "usernames", username);
 
     // Commit both docs together as a batch write.
-    const batch = createBatch();
-    batch.set(userDoc, {
-      username: formValue,
-      photoURL: user.photoURL,
-      displayName: user.displayName,
-    });
-    batch.set(usernameDoc, { uid: user.uid });
+    const batch = writeBatch(db);
+
+    const data: User = {
+      username: username,
+      uid: fUser!.uid,
+      displayName: fUser!.displayName!,
+      photoURL: fUser!.photoURL!,
+      preferences: {
+        ratingSystem: "tierlist",
+        tierlistNames: {
+          1: "Unwatchable",
+          2: "Awful",
+          3: "Bad",
+          4: "Good",
+          5: "Great",
+          6: "Excellent",
+          7: "Masterpiece",
+        },
+      },
+      bio: "",
+    };
+    batch.set(userDoc, userToFirestore(data));
+    batch.set(usernameDoc, { uid: fUser!.uid });
 
     await batch.commit();
   };
 
-  const onChange = (e) => {
+  const onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (
+    e
+  ) => {
+    e.preventDefault();
     // Force form value typed in form to match correct format
     const val = e.target.value.toLowerCase();
-    const re = /^(?=[a-zA-Z0-9._]{3,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
+    const re = /^(?=[a-zA-Z0-9._]{3,25}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
 
-    // Only set form value if length is < 3 OR it passes regex
+    // Only set username if length is < 3 OR it passes regex
     if (val.length < 3) {
-      setFormValue(val);
+      setUsername(val);
       setLoading(false);
       setIsValid(false);
     }
 
     if (re.test(val)) {
-      setFormValue(val);
+      setUsername(val);
       setLoading(true);
       setIsValid(false);
     }
   };
-
-  //
-
-  useEffect(() => {
-    checkUsername(formValue);
-  }, [formValue, checkUsername]);
 
   // Hit the database for username match after each debounced change
   // useCallback is required for debounce to work
   const checkUsername = useCallback(
     debounce(async (username) => {
       if (username.length >= 3) {
-        const ref = getUsernamesDoc(username);
-        const snap = await getSnap(ref);
+        const snap = await getDoc(doc(db, "usernames", username));
         setIsValid(!snap.exists());
         setLoading(false);
       }
     }, 500),
     []
   );
+
+  useEffect(() => {
+    checkUsername(username);
+  }, [username, checkUsername]);
 
   return (
     <Box component="form" onSubmit={onSubmit} autoComplete="off">
@@ -146,7 +168,7 @@ function UsernameForm() {
             id="input-username"
             label="Username"
             variant="standard"
-            value={formValue}
+            value={username}
             onChange={onChange}
           />
         </Grid>
