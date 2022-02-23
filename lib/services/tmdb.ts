@@ -3,8 +3,8 @@ import notfoundposter from "@public/posternotfound.png";
 
 const CONFIG = {
   api_key: "fc38338f58588b810badb2febb318cf1",
-  base_uri: "http://api.themoviedb.org/3/",
-  images_uri: "http://image.tmdb.org/t/p/w500",
+  base_uri: "https://api.themoviedb.org/3/",
+  images_uri: "https://image.tmdb.org/t/p/w500",
   timeout: 5000,
   language: "en-US",
   poster_not_found: notfoundposter.src,
