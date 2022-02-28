@@ -10,10 +10,11 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { ChangeEventHandler, useState } from "react";
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const movies = await getPopularMovies({});
   return {
-    props: { movies: movies }, // will be passed to the page component as props
+    props: { movies }, // will be passed to the page component as props
+    revalidate: 86400,
   };
 }
 

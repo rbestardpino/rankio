@@ -114,7 +114,6 @@ export default function RateMovie({ movie }: Props) {
                 color="secondary"
                 fullWidth
                 multiline
-                autoFocus
                 id="review"
                 label="Review"
                 variant="outlined"

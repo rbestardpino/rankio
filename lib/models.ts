@@ -83,8 +83,7 @@ export function movieFromJSON(movie: any): Movie {
   return {
     id: `${movie.id}`,
     image: movie.image,
-    title: (movie.original_title =
-      movie.language === "en" ? movie.original_title : movie.title),
+    title: movie.language === "en" ? movie.original_title : movie.title,
   };
 }
 
