@@ -1,25 +1,16 @@
 import Metatags from "@components/Metatags";
-import { UserContext } from "@lib/context";
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { ParsedUrlQuery } from "querystring";
-import { useContext } from "react";
-import { db } from "@lib/services/firebase";
-import {
-  query,
-  collection,
-  getDocs,
-  doc,
-  getDoc,
-  where,
-} from "firebase/firestore";
 import {
   Review,
   reviewFromFirestore,
   User,
   userFromFirestore,
 } from "@lib/models";
+import { db } from "@lib/services/firebase";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { ParsedUrlQuery } from "querystring";
 
 interface Params extends ParsedUrlQuery {
   username: string;
@@ -28,22 +19,34 @@ interface Params extends ParsedUrlQuery {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { username } = context.params as Params;
 
-  const user = userFromFirestore(
-    (
-      await getDocs(
-        query(collection(db, "users"), where("username", "==", username))
-      )
-    ).docs[0]
-  );
+  let user;
+
+  try {
+    user = userFromFirestore(
+      (
+        await getDocs(
+          query(collection(db, "users"), where("username", "==", username))
+        )
+      ).docs[0]
+    );
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
 
   if (!user)
     return {
       notFound: true,
     };
 
-  const reviews = (
-    await getDocs(query(collection(db, `users/${username}/reviews`)))
-  ).docs.map(reviewFromFirestore);
+  let reviews: Review[] = [];
+
+  (await getDocs(collection(db, `users/${user.uid}/reviews`))).forEach(
+    (doc) => {
+      reviews.push(reviewFromFirestore(doc));
+    }
+  );
 
   return {
     props: {
