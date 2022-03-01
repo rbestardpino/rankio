@@ -54,7 +54,8 @@ export default function RateMovie({ movie }: Props) {
       movie: {
         id: movie.id,
         title: movie.title,
-        image: movie.image,
+        poster: movie.poster,
+        backdrop: movie.backdrop,
       },
       rating: rating,
       review: review,
@@ -76,7 +77,7 @@ export default function RateMovie({ movie }: Props) {
       <Metatags
         title={`Rate ${movie.title} | RankIO`}
         description={`Rate ${movie.title} | RankIO`}
-        image={movie.image}
+        image={movie.poster}
       ></Metatags>
       <Container sx={{ my: 3 }}>
         <Grid container columnSpacing={3} rowSpacing={3}>
@@ -84,7 +85,7 @@ export default function RateMovie({ movie }: Props) {
             <Card sx={{ width: 250 }} variant="outlined">
               <CardMedia
                 component="img"
-                image={movie.image}
+                image={movie.poster}
                 alt={`${movie.title}'s poster`}
               />
             </Card>

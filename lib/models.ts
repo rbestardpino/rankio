@@ -33,7 +33,8 @@ export interface Review {
 export interface Movie {
   id: string;
   title: string;
-  image: string;
+  poster: string;
+  backdrop: string;
 }
 
 // instantiator with defaults
@@ -68,7 +69,8 @@ export function defaultReview(
     movie: {
       id: review.movie.id,
       title: review.movie.title,
-      image: review.movie.image,
+      poster: review.movie.poster,
+      backdrop: review.movie.backdrop,
     },
     rating: review.rating,
     review: review.review,
@@ -82,8 +84,9 @@ export function defaultReview(
 export function movieFromJSON(movie: any): Movie {
   return {
     id: `${movie.id}`,
-    image: movie.image,
+    poster: movie.poster,
     title: movie.language === "en" ? movie.original_title : movie.title,
+    backdrop: movie.backdrop,
   };
 }
 
@@ -118,7 +121,8 @@ export function reviewFromFirestore(reviewDoc: DocumentSnapshot): Review {
     movie: {
       id: reviewDoc.id,
       title: data?.movie.title,
-      image: data?.movie.image,
+      poster: data?.movie.poster,
+      backdrop: data?.movie.backdrop,
     },
     rating: data?.rating,
     review: data?.review,
@@ -130,7 +134,8 @@ export function reviewToFirestore(review: Review) {
   return {
     movie: {
       title: review.movie.title,
-      image: review.movie.image,
+      poster: review.movie.poster,
+      backdrop: review.movie.backdrop,
     },
     rating: review.rating,
     review: review.review,

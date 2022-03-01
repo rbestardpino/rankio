@@ -1,4 +1,5 @@
 import { Movie, movieFromJSON } from "@lib/models";
+import notfoundbackdrop from "@public/backdropnotfound.png";
 import notfoundposter from "@public/posternotfound.png";
 
 const CONFIG = {
@@ -8,6 +9,7 @@ const CONFIG = {
   timeout: 5000,
   language: "en-US",
   poster_not_found: notfoundposter.src,
+  backdrop_not_found: notfoundbackdrop.src,
 };
 
 function generateQuery(options: any): string {
@@ -35,24 +37,27 @@ async function getData(slug: string, options: any): Promise<any> {
   return await (await fetch(url)).json();
 }
 
-function addImage(movie: any): any {
-  movie.image = movie.poster_path
+function addImages(movie: any): any {
+  movie.poster = movie.poster_path
     ? CONFIG.images_uri + movie.poster_path
     : CONFIG.poster_not_found;
+  movie.backdrop = movie.backdrop_path
+    ? CONFIG.images_uri + movie.backdrop_path
+    : CONFIG.backdrop_not_found;
   return movie;
 }
 
 export async function getPopularMovies(options: any): Promise<Movie[]> {
   const data = await getData("movie/popular", options);
   const movies: any[] = data.results;
-  movies.forEach(addImage);
+  movies.forEach(addImages);
   return movies.map(movieFromJSON);
 }
 
 export async function getMovie(id: string, options: any): Promise<Movie> {
   let movie: any = await getData(`movie/${id}`, options);
 
-  movie = addImage(movie);
+  movie = addImages(movie);
 
   return movieFromJSON(movie);
 }
@@ -60,13 +65,13 @@ export async function getMovie(id: string, options: any): Promise<Movie> {
 export async function searchMovies(options: any): Promise<Movie[]> {
   const data = await getData("search/movie", options);
   const movies: any[] = data.results;
-  movies.forEach(addImage);
+  movies.forEach(addImages);
   return movies.map(movieFromJSON);
 }
 
 export async function getTopMovies(options: any): Promise<Movie[]> {
   const data = await getData("movie/top_rated", options);
   const movies: any[] = data.results;
-  movies.forEach(addImage);
+  movies.forEach(addImages);
   return movies.map(movieFromJSON);
 }

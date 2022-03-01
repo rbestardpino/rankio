@@ -17,7 +17,7 @@ export default function MovieCard({ movie }: Props) {
         <CardActionArea>
           <CardMedia
             component="img"
-            image={movie.image}
+            image={movie.poster}
             alt={`${movie.title}'s poster`}
           />
           <CardContent>

@@ -1,45 +1,69 @@
-import RatingSlider from "@components/RatingSlider";
 import { Review as IReview } from "@lib/models";
-import Card from "@mui/material/Card";
+import { Typography } from "@mui/material";
 import CardActionArea from "@mui/material/CardActionArea";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Image from "next/image";
+import RatingSlider from "./RatingSlider";
 
 interface Props {
   review: IReview;
-  reviewPage?: boolean;
 }
 
-export default function Review({ review, reviewPage }: Props) {
+export default function Review({ review }: Props) {
+  const max420 = useMediaQuery("(max-width:420px)");
+  const max700 = useMediaQuery("(max-width:700px)");
+  function getHeight(): number {
+    if (max420) return 120;
+    if (max700) return 170;
+    return 220;
+  }
+
+  const ratio = 500 / 750;
+  const height = getHeight();
+  const width = height * ratio;
+
   return (
-    <Card variant="elevation" elevation={5}>
-      <CardActionArea
-        href={`/${review.author}/${review.id}`}
-        disabled={reviewPage}
-      >
-        <CardContent>
-          <Grid container direction="row" columnSpacing={2} rowSpacing={2}>
-            <Grid item xs>
-              <CardMedia component="img" image={review.movie.image} />
-            </Grid>
-            <Grid item xs container direction="column" rowSpacing={2}>
-              <Grid item xs>
-                <Typography variant="h5">{review.movie.title}</Typography>
-              </Grid>
-              <Grid item xs>
-                <RatingSlider value={review.rating} readOnly />
-              </Grid>
-              <Divider />
-              <Grid item xs>
-                <Typography variant="body1">{review.review}</Typography>
-              </Grid>
-            </Grid>
+    <CardActionArea href={`/${review.author}/${review.id}`}>
+      <Paper variant="elevation" elevation={5}>
+        <Grid container direction="row" maxHeight={height}>
+          <Grid item maxHeight={height} maxWidth={width}>
+            <Image src={review.movie.poster} height={height} width={width} />
           </Grid>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+          <Grid
+            item
+            xs
+            container
+            mx={1}
+            my={0.5}
+            direction="column"
+            rowSpacing={1}
+            width={0}
+            maxHeight={height}
+          >
+            <Grid item xs container direction="row">
+              <Grid item xs>
+                <Typography variant={max420 ? "subtitle2" : "h6"} noWrap>
+                  {review.movie.title}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid item xs>
+              <RatingSlider value={review.rating} readOnly />
+            </Grid>
+            {!max420 && (
+              <Grid item xs container direction="row">
+                <Grid item xs>
+                  <Typography variant="body1" noWrap>
+                    {review.review}
+                  </Typography>
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
+        </Grid>
+      </Paper>
+    </CardActionArea>
   );
 }

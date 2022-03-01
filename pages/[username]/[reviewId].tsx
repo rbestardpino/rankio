@@ -1,5 +1,5 @@
 import Metatags from "@components/Metatags";
-import Review from "@components/Review";
+import RatingSlider from "@components/RatingSlider";
 import { UserContext } from "@lib/context";
 import { Review as IReview, reviewFromFirestore } from "@lib/models";
 import { db } from "@lib/services/firebase";
@@ -9,18 +9,15 @@ import Reddit from "@mui/icons-material/Reddit";
 import Telegram from "@mui/icons-material/Telegram";
 import Twitter from "@mui/icons-material/Twitter";
 import WhatsappOutlined from "@mui/icons-material/WhatsappOutlined";
+import { Divider } from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import {
-  collectionGroup,
-  getDocs,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { collectionGroup, getDocs, query, where } from "firebase/firestore";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Image from "next/image";
 import { ParsedUrlQuery } from "querystring";
 import { useContext } from "react";
 import {
@@ -92,7 +89,7 @@ export default function ReviewPage({ author, review }: Props) {
       <Metatags
         title="Review | RankIO"
         description={`${author}'s review of ${review.movie.title}`}
-        image={review.movie.image}
+        image={review.movie.poster}
       />
       <Container sx={{ my: 3 }}>
         <Grid container direction="column" rowSpacing={3}>
@@ -112,6 +109,32 @@ export default function ReviewPage({ author, review }: Props) {
               </Button>
             </Grid>
           </Grid>
+          <Grid
+            item
+            xs
+            container
+            direction="column"
+            rowSpacing={3}
+            justifyContent="flex-start"
+            alignItems="stretch"
+            mb={5}
+          >
+            <Grid item xs textAlign="center">
+              <Image src={review.movie.backdrop} height={393} width={700} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="h5">{review.movie.title}</Typography>
+            </Grid>
+            <Grid item xs my={3}>
+              <RatingSlider value={review.rating} readOnly />
+            </Grid>
+            <Paper variant="elevation" elevation={5}>
+              <Grid item xs m={2}>
+                <Typography variant="body2">{review.review}</Typography>
+              </Grid>
+            </Paper>
+          </Grid>
+          <Divider>Share this review</Divider>
           <Grid
             item
             xs
@@ -154,9 +177,6 @@ export default function ReviewPage({ author, review }: Props) {
                 <Reddit />
               </RedditShareButton>
             </Grid>
-          </Grid>
-          <Grid item xs>
-            <Review review={review} reviewPage />
           </Grid>
         </Grid>
       </Container>
