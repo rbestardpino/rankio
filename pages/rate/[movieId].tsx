@@ -5,17 +5,17 @@ import { UserContext } from "@lib/context";
 import { defaultReview, Movie, reviewToFirestore } from "@lib/models";
 import { db } from "@lib/services/firebase";
 import { getMovie } from "@lib/services/tmdb";
+import { shimmer, toBase64 } from "@lib/utils";
 import RateReview from "@mui/icons-material/RateReview";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { GetServerSideProps } from "next";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { useContext, useState } from "react";
@@ -81,13 +81,16 @@ export default function RateMovie({ movie }: Props) {
       <Container sx={{ my: 3 }}>
         <Grid container columnSpacing={3} rowSpacing={3}>
           <Grid item xs={12} lg={3}>
-            <Card sx={{ width: 250 }} variant="outlined">
-              <CardMedia
-                component="img"
-                image={movie.poster}
-                alt={`${movie.title}'s poster`}
-              />
-            </Card>
+            <Image
+              src={movie.poster}
+              alt={`${movie.title}'s poster`}
+              width={250}
+              height={350}
+              placeholder="blur"
+              blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                shimmer(250, 350)
+              )}`}
+            />
           </Grid>
           <Grid container item xs={12} lg={9} direction="column" rowSpacing={3}>
             <Grid item xs>
