@@ -6,11 +6,15 @@ import { Review as IReview } from "@lib/models";
 import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export default function ReviewsList() {
   const { reviews } = useContext(UserContext);
   const [filteredReviews, setFilteredReviews] = useState<IReview[]>(reviews);
+
+  useEffect(() => {
+    setFilteredReviews(reviews);
+  });
 
   const handleSearch = (e: any) => {
     e.preventDefault();
@@ -36,9 +40,7 @@ export default function ReviewsList() {
                 {...params}
                 variant="outlined"
                 fullWidth
-                autoFocus
                 color="secondary"
-                focused={false}
                 label="Search review"
                 onChange={handleSearch}
                 onSelect={handleSearch}
