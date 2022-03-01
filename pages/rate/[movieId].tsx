@@ -19,6 +19,7 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { useContext, useState } from "react";
+import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import toast from "react-hot-toast";
 
 interface Params extends ParsedUrlQuery {
@@ -37,14 +38,12 @@ interface Props {
 }
 
 export default function RateMovie({ movie }: Props) {
-  const { user, reviews } = useContext(UserContext);
-  const existingReview = reviews.find((rev) => rev.id === movie.id);
-  const [rating, setRating] = useState(
-    existingReview ? existingReview.rating : 5
+  const { user } = useContext(UserContext);
+  const [rev] = useDocumentDataOnce(
+    doc(db, `users/${user?.uid}/reviews/${movie.id}`)
   );
-  const [review, setReview] = useState(
-    existingReview ? existingReview.review : ""
-  );
+  const [rating, setRating] = useState(5);
+  const [review, setReview] = useState("");
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -105,7 +104,7 @@ export default function RateMovie({ movie }: Props) {
             </Grid>
             <Grid item xs>
               <RatingSlider
-                value={rating}
+                value={rev?.rating || rating}
                 onChange={(_, value) => setRating(value as number)}
               />
             </Grid>
@@ -118,7 +117,7 @@ export default function RateMovie({ movie }: Props) {
                 id="review"
                 label="Review"
                 variant="outlined"
-                value={review}
+                value={rev?.review || review}
                 onChange={(event) => setReview(event.target.value)}
               />
             </Grid>
@@ -132,7 +131,7 @@ export default function RateMovie({ movie }: Props) {
                   startIcon={<RateReview />}
                   onClick={handleSubmit}
                 >
-                  {existingReview ? "Update" : "Rate"}
+                  {rev ? "Update" : "Rate"}
                 </Button>
               </AuthCheck>
             </Grid>
