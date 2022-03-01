@@ -53,21 +53,5 @@ export default function MovieCard({ movie }: Props) {
         </Grid>
       </CardActionArea>
     </Paper>
-    // <Link href={`/rate/${movie.id}`} passHref>
-    //   <Card sx={{ width: 250 }} variant="outlined">
-    //     <CardActionArea>
-    //       <CardMedia
-    //         component="img"
-    //         image={movie.poster}
-    //         alt={`${movie.title}'s poster`}
-    //       />
-    //       <CardContent>
-    //         <Typography gutterBottom variant="h5" component="div">
-    //           {movie.title}
-    //         </Typography>
-    //       </CardContent>
-    //     </CardActionArea>
-    //   </Card>
-    // </Link>
   );
 }

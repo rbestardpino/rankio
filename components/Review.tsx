@@ -1,9 +1,9 @@
 import { Review as IReview } from "@lib/models";
 import { shimmer, toBase64 } from "@lib/utils";
-import { Typography } from "@mui/material";
 import CardActionArea from "@mui/material/CardActionArea";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Image from "next/image";
 import RatingSlider from "./RatingSlider";

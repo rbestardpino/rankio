@@ -1,6 +1,6 @@
 import Metatags from "@components/Metatags";
 import { UserContext } from "@lib/context";
-import { defaultUser, User, userToFirestore } from "@lib/models";
+import { defaultUser, userToFirestore } from "@lib/models";
 import { auth, db } from "@lib/services/firebase";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import Google from "@mui/icons-material/Google";
