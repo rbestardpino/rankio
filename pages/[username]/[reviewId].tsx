@@ -3,6 +3,7 @@ import RatingSlider from "@components/RatingSlider";
 import { UserContext } from "@lib/context";
 import { Review as IReview, reviewFromFirestore } from "@lib/models";
 import { db } from "@lib/services/firebase";
+import { shimmer, toBase64 } from "@lib/utils";
 import FacebookOutlined from "@mui/icons-material/FacebookOutlined";
 import RateReview from "@mui/icons-material/RateReview";
 import Reddit from "@mui/icons-material/Reddit";
@@ -120,7 +121,17 @@ export default function ReviewPage({ author, review }: Props) {
             mb={5}
           >
             <Grid item xs textAlign="center">
-              <Image src={review.movie.backdrop} height={393} width={700} />
+              <Image
+                src={review.movie.backdrop}
+                alt={`${review.movie.title}'s backdrop poster`}
+                height={393}
+                width={700}
+                priority
+                placeholder="blur"
+                blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                  shimmer(700, 393)
+                )}`}
+              />
             </Grid>
             <Grid item xs>
               <Typography variant="h5">{review.movie.title}</Typography>

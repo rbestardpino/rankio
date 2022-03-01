@@ -1,4 +1,5 @@
 import { Review as IReview } from "@lib/models";
+import { shimmer, toBase64 } from "@lib/utils";
 import { Typography } from "@mui/material";
 import CardActionArea from "@mui/material/CardActionArea";
 import Grid from "@mui/material/Grid";
@@ -29,7 +30,17 @@ export default function Review({ review }: Props) {
       <Paper variant="elevation" elevation={5}>
         <Grid container direction="row" maxHeight={height}>
           <Grid item maxHeight={height} maxWidth={width}>
-            <Image src={review.movie.poster} height={height} width={width} />
+            <Image
+              src={review.movie.poster}
+              alt={`${review.movie.title}'s poster`}
+              height={height}
+              width={width}
+              priority
+              placeholder="blur"
+              blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                shimmer(width, height)
+              )}`}
+            />
           </Grid>
           <Grid
             item

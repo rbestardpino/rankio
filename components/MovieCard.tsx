@@ -1,4 +1,5 @@
 import { Movie } from "@lib/models";
+import { shimmer, toBase64 } from "@lib/utils";
 import CardActionArea from "@mui/material/CardActionArea";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -32,7 +33,17 @@ export default function MovieCard({ movie }: Props) {
             width={width}
             maxWidth={width}
           >
-            <Image src={movie.poster} height={height} width={width} />
+            <Image
+              src={movie.poster}
+              alt={`${movie.title}'s poster`}
+              height={height}
+              width={width}
+              priority
+              placeholder="blur"
+              blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                shimmer(width, height)
+              )}`}
+            />
           </Grid>
           <Grid item xs textAlign="center" my={1}>
             <Typography variant="h5" component="div">
