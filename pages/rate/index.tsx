@@ -13,7 +13,7 @@ import { ChangeEventHandler, useState } from "react";
 export async function getStaticProps() {
   const movies = await getPopularMovies({});
   return {
-    props: { movies }, // will be passed to the page component as props
+    props: { movies },
     revalidate: 86400,
   };
 }
