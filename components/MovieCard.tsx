@@ -1,3 +1,4 @@
+import { UserContext } from "@lib/context";
 import { Movie } from "@lib/models";
 import { shimmer, toBase64 } from "@lib/utils";
 import CardActionArea from "@mui/material/CardActionArea";
@@ -5,18 +6,20 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import { useContext } from "react";
 
 interface Props {
   movie: Movie;
 }
 
 export default function MovieCard({ movie }: Props) {
+  const { user } = useContext(UserContext);
   const width = 250;
   const height = (width * 750) / 500;
 
   return (
     <Paper variant="outlined">
-      <CardActionArea href={`/rate/${movie.id}`}>
+      <CardActionArea href={`/rate/${movie.id}?from=${user?.username}`}>
         <Grid
           container
           direction="column"

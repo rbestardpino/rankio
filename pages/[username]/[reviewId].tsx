@@ -104,7 +104,9 @@ export default function ReviewPage({ author, review }: Props) {
                 variant="outlined"
                 color="inherit"
                 startIcon={<RateReview />}
-                href={`/rate/${review.id}`}
+                href={`/rate/${review.id}${
+                  user ? "?from=" + user.username : ""
+                }`}
               >
                 {user?.username === author ? "Edit" : "Make your own review"}
               </Button>
