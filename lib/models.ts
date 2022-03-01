@@ -25,7 +25,7 @@ export interface Review {
   id: string;
   author: string;
   movie: Movie;
-  createdAt: number;
+  lastEdit: number;
   rating: number;
   review: string;
 }
@@ -74,7 +74,7 @@ export function defaultReview(
     review: review.review,
     author: review.author,
     id: review.movie.id,
-    createdAt: 0,
+    lastEdit: 0,
   };
 }
 
@@ -122,7 +122,7 @@ export function reviewFromFirestore(reviewDoc: DocumentSnapshot): Review {
     },
     rating: data?.rating,
     review: data?.review,
-    createdAt: data?.createdAt?.toMillis() || 0,
+    lastEdit: data?.lastEdit?.toMillis() || 0,
   };
 }
 

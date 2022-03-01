@@ -44,7 +44,7 @@ export function useUserData() {
     if (fUser) {
       const q = query(
         collection(db, `users/${fUser.uid}/reviews`),
-        orderBy("createdAt", "desc")
+        orderBy("lastEdit", "desc")
       );
       unsubscribe = onSnapshot(q, (snap) => {
         const _reviews: Review[] = [];

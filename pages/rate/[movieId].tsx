@@ -64,7 +64,7 @@ export default function RateMovie({ movie }: Props) {
 
     await setDoc(reviewRef, {
       ...reviewToFirestore(data),
-      createdAt: serverTimestamp(),
+      lastEdit: serverTimestamp(),
     });
 
     toast.success("Review saved", { icon: "🌟" });
