@@ -19,6 +19,7 @@ import Typography from "@mui/material/Typography";
 import { collectionGroup, getDocs, query, where } from "firebase/firestore";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { ParsedUrlQuery } from "querystring";
 import { useContext } from "react";
 import {
@@ -146,6 +147,21 @@ export default function ReviewPage({ author, review }: Props) {
                 <Typography variant="body2">{review.review}</Typography>
               </Grid>
             </Paper>
+            <Grid item xs textAlign="right" my={-3}>
+              <Link href={`/${review.author}`}>
+                <Typography
+                  variant="caption"
+                  fontSize={10}
+                  fontWeight="bold"
+                  sx={{ cursor: "pointer" }}
+                >
+                  @{review.author}
+                </Typography>
+              </Link>
+              <Typography variant="caption" fontSize={10}>{` on ${new Date(
+                review.lastEdit
+              ).toLocaleString()}`}</Typography>
+            </Grid>
           </Grid>
           <Divider>Share this review</Divider>
           <Grid
