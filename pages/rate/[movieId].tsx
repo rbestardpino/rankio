@@ -101,10 +101,19 @@ export default function RateMovie({ movie, existingReview }: Props) {
         id: movie.id,
       });
 
-      await setDoc(reviewRef, {
-        ...reviewToFirestore(data),
-        lastEdit: serverTimestamp(),
-      });
+      if (existingReview) {
+        data.createdAt = existingReview.createdAt;
+        await setDoc(reviewRef, {
+          ...reviewToFirestore(data),
+          lastEdit: serverTimestamp(),
+        });
+      } else {
+        await setDoc(reviewRef, {
+          ...reviewToFirestore(data),
+          createdAt: serverTimestamp(),
+          lastEdit: serverTimestamp(),
+        });
+      }
     }
 
     toast.success("Review saved", { icon: "🌟" });

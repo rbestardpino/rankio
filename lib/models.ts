@@ -1,4 +1,4 @@
-import { DocumentSnapshot } from "firebase/firestore/";
+import { DocumentSnapshot, Timestamp } from "firebase/firestore";
 
 // interfaces
 export interface User {
@@ -26,6 +26,7 @@ export interface Review {
   author: string;
   movie: Movie;
   lastEdit: number;
+  createdAt: number;
   rating: number;
   review: string;
 }
@@ -77,6 +78,7 @@ export function defaultReview(
     author: review.author,
     id: review.movie.id,
     lastEdit: 0,
+    createdAt: 0,
   };
 }
 
@@ -127,6 +129,7 @@ export function reviewFromFirestore(reviewDoc: DocumentSnapshot): Review {
     rating: data?.rating,
     review: data?.review,
     lastEdit: data?.lastEdit?.toMillis() || 0,
+    createdAt: data?.createdAt?.toMillis() || 0,
   };
 }
 
@@ -140,5 +143,6 @@ export function reviewToFirestore(review: Review) {
     rating: review.rating,
     review: review.review,
     author: review.author,
+    createdAt: Timestamp.fromMillis(review.createdAt),
   };
 }

@@ -1,6 +1,7 @@
 import Metatags from "@components/Metatags";
 import MovieCard from "@components/MovieCard";
 import ReviewsList from "@components/ReviewsList";
+import { UserContext } from "@lib/context";
 import { Movie } from "@lib/models";
 import { getTopMovies } from "@lib/services/tmdb";
 import { RateReview } from "@mui/icons-material";
@@ -9,7 +10,8 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { GetStaticProps } from "next";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
 
 export const getStaticProps: GetStaticProps = async () => {
   const recommendedMovies = await getTopMovies({});
@@ -23,6 +25,14 @@ interface Props {
 }
 
 export default function Home({ recommendedMovies }: Props) {
+  const router = useRouter();
+  const { fUser } = useContext(UserContext);
+  useEffect(() => {
+    if (!fUser) {
+      router.push("/login");
+    }
+  }, [fUser]);
+
   return (
     <main>
       <Metatags />
