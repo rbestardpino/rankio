@@ -26,12 +26,12 @@ interface Props {
 
 export default function Home({ recommendedMovies }: Props) {
   const router = useRouter();
-  const { fUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   useEffect(() => {
-    if (!fUser) {
+    if (!user) {
       router.push("/login");
     }
-  }, [fUser]);
+  }, [user]);
 
   return (
     <main>
@@ -81,6 +81,8 @@ function Recommendation({ recommendedMovies }: Props) {
 }
 
 function YourReviews() {
+  const { reviews } = useContext(UserContext);
+
   return (
     <Grid container direction="column" rowSpacing={3}>
       <Grid item xs container direction="row">
@@ -99,7 +101,7 @@ function YourReviews() {
         </Grid>
       </Grid>
       <Grid item xs>
-        <ReviewsList></ReviewsList>
+        <ReviewsList reviews={reviews}></ReviewsList>
       </Grid>
     </Grid>
   );

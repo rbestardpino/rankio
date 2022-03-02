@@ -1,15 +1,17 @@
 import AuthCheck from "@components/AuthCheck";
 import NothingFound from "@components/NothingFound";
 import Review from "@components/Review";
-import { UserContext } from "@lib/context";
 import { Review as IReview } from "@lib/models";
 import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import { useContext, useState } from "react";
+import { useState } from "react";
 
-export default function ReviewsList() {
-  const { reviews } = useContext(UserContext);
+interface Props {
+  reviews: IReview[];
+}
+
+export default function ReviewsList({ reviews }: Props) {
   const [filteredReviews, setFilteredReviews] = useState<IReview[]>(reviews);
 
   const handleSearch = (e: any) => {
