@@ -159,6 +159,11 @@ export default function ReviewPage({ author, review }: Props) {
                 </Typography>
               </Link>
               <Typography variant="caption" fontSize={10}>{` on ${new Date(
+                review.createdAt
+              ).toLocaleString()}`}</Typography>
+            </Grid>
+            <Grid item xs textAlign="right" my={-1}>
+              <Typography variant="caption" fontSize={8}>{`Edited on ${new Date(
                 review.lastEdit
               ).toLocaleString()}`}</Typography>
             </Grid>
