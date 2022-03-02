@@ -123,7 +123,7 @@ export default function ReviewPage({ author, review }: Props) {
               </Grid>
             </Paper>
             <Grid item xs textAlign="right" my={-3}>
-              <Link href={`/${review.author}`}>
+              <Link href={`/${review.author}`} passHref>
                 <Typography
                   variant="caption"
                   fontSize={10}
