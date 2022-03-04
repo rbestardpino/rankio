@@ -1,6 +1,6 @@
 import EditReviewButton from "@components/EditReviewButton";
 import Metatags from "@components/Metatags";
-import RatingSlider from "@components/RatingSlider";
+import Rating from "@components/Rating";
 import ShareReviewButtons from "@components/ShareReviewButtons";
 import { Review as IReview, reviewFromFirestore } from "@lib/models";
 import { db } from "@lib/services/firebase";
@@ -115,7 +115,7 @@ export default function ReviewPage({ author, review }: Props) {
               <Typography variant="h5">{review.movie.title}</Typography>
             </Grid>
             <Grid item xs my={3}>
-              <RatingSlider value={review.rating} readOnly />
+              <Rating value={review.rating} readOnly author={review.author} />
             </Grid>
             <Paper variant="elevation" elevation={5}>
               <Grid item xs m={2}>

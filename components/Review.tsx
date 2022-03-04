@@ -6,7 +6,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Image from "next/image";
-import RatingSlider from "./RatingSlider";
+import Rating from "./Rating";
 
 interface Props {
   review: IReview;
@@ -61,7 +61,7 @@ export default function Review({ review }: Props) {
               </Grid>
             </Grid>
             <Grid item xs>
-              <RatingSlider value={review.rating} readOnly />
+              <Rating value={review.rating} readOnly author={review.author} />
             </Grid>
             {!max420 && (
               <Grid item xs container direction="row">

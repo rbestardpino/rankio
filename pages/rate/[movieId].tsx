@@ -1,6 +1,6 @@
 import AuthCheck from "@components/AuthCheck";
 import Metatags from "@components/Metatags";
-import RatingSlider from "@components/RatingSlider";
+import Rating from "@components/Rating";
 import { UserContext } from "@lib/context";
 import {
   defaultReview,
@@ -155,8 +155,9 @@ export default function RateMovie({ movie, existingReview }: Props) {
               </Typography>
             </Grid>
             <Grid item xs>
-              <RatingSlider
+              <Rating
                 value={rating}
+                author={user?.username}
                 onChange={(_, value) => setRating(value as number)}
               />
             </Grid>

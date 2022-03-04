@@ -1,3 +1,4 @@
+import { defaults, schema } from "@lib/preferences";
 import { DocumentSnapshot, Timestamp } from "firebase/firestore";
 
 // interfaces
@@ -6,19 +7,21 @@ export interface User {
   username: string;
   displayName: string;
   photoURL: string;
-  preferences: {
-    ratingSystem: "stars" | "tierlist";
-    tierlistNames: {
-      1: string;
-      2: string;
-      3: string;
-      4: string;
-      5: string;
-      6: string;
-      7: string;
-    };
-  };
+  preferences: Preferences;
   bio: string;
+}
+
+export interface Preferences {
+  ratingSystem: typeof schema.ratingSystem.options[number];
+  tierlistNames: {
+    1: string;
+    2: string;
+    3: string;
+    4: string;
+    5: string;
+    6: string;
+    7: string;
+  };
 }
 
 export interface Review {
@@ -48,15 +51,15 @@ export function defaultUser(
     displayName: user.displayName,
     photoURL: user.photoURL,
     preferences: {
-      ratingSystem: "tierlist",
+      ratingSystem: defaults.ratingSystem,
       tierlistNames: {
-        1: "Unwatchable",
-        2: "Awful",
-        3: "Bad",
-        4: "Good",
-        5: "Great",
-        6: "Excellent",
-        7: "Masterpiece",
+        1: defaults.tierlistNames[1],
+        2: defaults.tierlistNames[2],
+        3: defaults.tierlistNames[3],
+        4: defaults.tierlistNames[4],
+        5: defaults.tierlistNames[5],
+        6: defaults.tierlistNames[6],
+        7: defaults.tierlistNames[7],
       },
     },
     bio: "",
