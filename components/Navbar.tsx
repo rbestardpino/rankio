@@ -15,16 +15,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
+import toast from "react-hot-toast";
+import SettingsModal from "./SettingsModal";
 
 export default function Navbar() {
   const { user } = useContext(UserContext);
   const [anchorEl, setAnchorEl] = useState<
     Element | ((element: Element) => Element) | null | undefined
   >(null);
+  const [openDialog, setOpenDialog] = useState(false);
   const { asPath } = useRouter();
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleCloseModal = (
+    _event: React.SyntheticEvent<unknown>,
+    reason?: string
+  ) => {
+    if (reason !== "backdropClick") {
+      setOpenDialog(false);
+      toast.success("Settings updated", { icon: "🌟" });
+    }
   };
 
   return (
@@ -37,7 +50,7 @@ export default function Navbar() {
             </Box>
           </Link>
           {user && (
-            <div>
+            <>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -61,14 +74,26 @@ export default function Navbar() {
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
-                MenuListProps={{ onMouseLeave: handleClose }}
               >
-                {/* <Link href={`/${username}`} passHref>
+                <MenuItem onClick={handleClose} disabled dense>
+                  {user.username}
+                </MenuItem>
+                <Divider />
+                <Link href={`/${user.username}`} passHref>
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
                 </Link>
-                <MenuItem onClick={handleClose}>Settings</MenuItem> */}
-                <MenuItem onClick={handleClose}>{user.username}</MenuItem>
-                <Divider></Divider>
+                <MenuItem
+                  onClick={() => {
+                    setOpenDialog(true);
+                  }}
+                >
+                  Settings
+                </MenuItem>
+                <SettingsModal
+                  open={openDialog}
+                  handleClose={handleCloseModal}
+                />
+                <Divider />
                 <MenuItem
                   onClick={async () => {
                     handleClose();
@@ -80,7 +105,7 @@ export default function Navbar() {
                   Sign out
                 </MenuItem>
               </Menu>
-            </div>
+            </>
           )}
 
           {/* user is not signed OR has not created username */}

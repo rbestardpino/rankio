@@ -1,13 +1,12 @@
-import { Preferences, userFromFirestore } from "@lib/models";
-import { defaults } from "@lib/preferences";
+import { UserContext } from "@lib/context";
+import { userFromFirestore } from "@lib/models";
+import { defaultPreferences } from "@lib/preferences";
 import { db } from "@lib/services/firebase";
 import Box from "@mui/material/Box";
 import MRating from "@mui/material/Rating";
 import Slider from "@mui/material/Slider";
 import { doc, getDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
-
-// FIXME: todo lo relacionado a tener propias preferencias no funca
+import { useContext, useEffect, useState } from "react";
 
 interface Props {
   value: number;
@@ -21,38 +20,26 @@ interface Props {
 }
 
 export default function Rating({ value, onChange, readOnly, author }: Props) {
-  const [userPreferences, setUserPreferences] = useState<Preferences>(defaults);
+  const { user } = useContext(UserContext);
+  const [userPreferences, setUserPreferences] = useState(
+    JSON.parse(JSON.stringify(defaultPreferences))
+  );
 
   function getValueLabel(val: number) {
-    switch (val) {
-      case 1:
-        return userPreferences.tierlistNames[1];
-      case 2:
-        return userPreferences.tierlistNames[2];
-      case 3:
-        return userPreferences.tierlistNames[3];
-      case 4:
-        return userPreferences.tierlistNames[4];
-      case 5:
-        return userPreferences.tierlistNames[5];
-      case 6:
-        return userPreferences.tierlistNames[6];
-      case 7:
-        return userPreferences.tierlistNames[7];
-      default:
-        return "Unkown value";
-    }
+    return userPreferences[`label${val as 1 | 2 | 3 | 4 | 5 | 6 | 7}`];
   }
 
   useEffect(() => {
     getDoc(doc(db, `usernames/${author}`)).then((_doc) => {
       if (_doc.exists()) {
         getDoc(doc(db, `users/${_doc.data().uid}`)).then((__doc) => {
-          setUserPreferences(userFromFirestore(__doc)?.preferences || defaults);
+          setUserPreferences(
+            userFromFirestore(__doc)?.preferences || defaultPreferences
+          );
         });
       }
     });
-  }, [author]);
+  }, [author, user]);
 
   return (
     <>
