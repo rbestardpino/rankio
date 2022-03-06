@@ -82,7 +82,7 @@ export default function SettingsModal({ open, handleClose }: Props) {
           .map((pref) => (
             <ListItem key={pref.key}>{getSettingComponent(pref)}</ListItem>
           ))
-          .flatMap((e) => [<Divider />, e])
+          .flatMap((e) => [<Divider key={e.key} />, e])
           .slice(1)}
       </List>
     </Dialog>
