@@ -28,7 +28,7 @@ export default function Custom404() {
             ></iframe>
           </Grid>
           <Grid item xs>
-            <Button variant="outlined" color="inherit" href="/">
+            <Button variant="outlined" color="inherit" href="/home">
               Go home
             </Button>
           </Grid>

@@ -44,7 +44,7 @@ export default function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Link href="/" passHref>
+          <Link href="/home" passHref>
             <Box component="div" sx={{ flexGrow: 1 }}>
               <Image src={isotipo} height={50} width={50} alt="logo" />
             </Box>
@@ -109,8 +109,8 @@ export default function Navbar() {
           )}
 
           {/* user is not signed OR has not created username */}
-          {!user && asPath !== "/login" && (
-            <Link href="/login" passHref>
+          {!user && asPath !== "/" && (
+            <Link href="/" passHref>
               <Button variant="outlined" color="inherit">
                 Login
               </Button>

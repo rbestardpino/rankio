@@ -1,108 +1,181 @@
 import Metatags from "@components/Metatags";
-import MovieCard from "@components/MovieCard";
-import ReviewsList from "@components/ReviewsList";
 import { UserContext } from "@lib/context";
-import { Movie } from "@lib/models";
-import { getTopMovies } from "@lib/services/tmdb";
-import { RateReview } from "@mui/icons-material";
+import { defaultUser, userToFirestore } from "@lib/models";
+import { auth, db } from "@lib/services/firebase";
+import ErrorOutline from "@mui/icons-material/ErrorOutline";
+import Google from "@mui/icons-material/Google";
+import SendOutlined from "@mui/icons-material/SendOutlined";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { GetStaticProps } from "next";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { doc, getDoc, writeBatch } from "firebase/firestore";
+import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import {
+  ChangeEventHandler,
+  FormEventHandler,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-export const getStaticProps: GetStaticProps = async () => {
-  const recommendedMovies = await getTopMovies({});
-  return {
-    props: { recommendedMovies },
-  };
-};
-
-interface Props {
-  recommendedMovies: Movie[];
-}
-
-export default function Home({ recommendedMovies }: Props) {
+export default function Login() {
+  const { user, fUser } = useContext(UserContext);
   const router = useRouter();
-  const { user } = useContext(UserContext);
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    }
-  }, [user]);
+
+  if (user) {
+    router.push("/home");
+  }
 
   return (
     <main>
-      <Metatags />
-      <Container sx={{ my: 4 }}>
-        <Grid container direction="row" columnSpacing={5} rowSpacing={5}>
-          <Grid item xs={12} md={8}>
-            <YourReviews></YourReviews>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Recommendation recommendedMovies={recommendedMovies} />
-          </Grid>
-        </Grid>
-      </Container>
+      <Metatags
+        title="RankIO | Sign in"
+        description="Sign in to your RankIO account"
+      ></Metatags>
+
+      {fUser && !user ? <UsernameForm /> : <SignIn />}
     </main>
   );
 }
 
-function Recommendation({ recommendedMovies }: Props) {
-  const [index, setIndex] = useState(0);
-
-  const handleNext = () => {
-    if (index === recommendedMovies.length - 1) setIndex(0);
-    else setIndex(index + 1);
-  };
-
+// Sign in with Google button
+function SignIn() {
   return (
-    <Grid container direction="column" rowSpacing={3}>
-      <Grid item xs>
-        <Typography variant="h5">Top movies</Typography>
-      </Grid>
-      <Grid item xs container alignContent="start" justifyContent="center">
-        <MovieCard movie={recommendedMovies[index]}></MovieCard>
-      </Grid>
-      <Grid item xs textAlign="center">
-        <Button
-          variant="outlined"
-          fullWidth
-          color="inherit"
-          onClick={handleNext}
-        >
-          Next
-        </Button>
-      </Grid>
-    </Grid>
-  );
-}
-
-function YourReviews() {
-  const { reviews } = useContext(UserContext);
-
-  return (
-    <Grid container direction="column" rowSpacing={3}>
-      <Grid item xs container direction="row">
-        <Grid item xs={7}>
-          <Typography variant="h5">Your reviews</Typography>
+    <Box>
+      <Grid container mt={1} spacing={4} textAlign="center">
+        <Grid item xs={12}>
+          <Typography variant="h4">
+            Join RankIO using your Google account
+          </Typography>
         </Grid>
-        <Grid item xs={5} container justifyContent="flex-end">
+        <Grid item xs={12}>
           <Button
-            variant="outlined"
             color="inherit"
-            href="/rate"
-            startIcon={<RateReview />}
+            size="large"
+            variant="outlined"
+            startIcon={<Google />}
+            onClick={async () =>
+              await signInWithPopup(auth, new GoogleAuthProvider())
+            }
           >
-            Rate a movie
+            JOIN
           </Button>
         </Grid>
       </Grid>
-      <Grid item xs>
-        <ReviewsList reviews={reviews}></ReviewsList>
+    </Box>
+  );
+}
+
+// Username form
+function UsernameForm() {
+  const [username, setUsername] = useState("");
+  const [isValid, setIsValid] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const { fUser } = useContext(UserContext);
+
+  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+
+    // Create refs for both documents
+    const userDoc = doc(db, "users", fUser!.uid);
+    const usernameDoc = doc(db, "usernames", username);
+
+    // Commit both docs together as a batch write.
+    const batch = writeBatch(db);
+
+    const user = defaultUser({
+      username: username,
+      uid: fUser!.uid,
+      displayName: fUser!.displayName!,
+      photoURL: fUser!.photoURL!,
+    });
+    batch.set(userDoc, userToFirestore(user));
+    batch.set(usernameDoc, { uid: fUser!.uid });
+
+    await batch.commit();
+  };
+
+  const onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (
+    e
+  ) => {
+    e.preventDefault();
+    // Force form value typed in form to match correct format
+    const val = e.target.value.toLowerCase();
+    const re = /^(?=[a-zA-Z0-9._]{3,25}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
+
+    // Only set username if length is < 3 OR it passes regex
+    if (val.length < 3) {
+      setUsername(val);
+      setLoading(false);
+      setIsValid(false);
+    }
+
+    if (re.test(val)) {
+      setUsername(val);
+      setLoading(true);
+      setIsValid(false);
+    }
+  };
+
+  // Hit the database for username match after each debounced change
+  // useCallback is required for debounce to work
+  const checkUsername = useCallback(
+    debounce(async (username) => {
+      if (username.length >= 3) {
+        const snap = await getDoc(doc(db, "usernames", username));
+        setIsValid(!snap.exists());
+        setLoading(false);
+      }
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    checkUsername(username);
+  }, [username, checkUsername]);
+
+  return (
+    <Box component="form" onSubmit={onSubmit} autoComplete="off">
+      <Grid container mt={1} rowSpacing={4} direction="column">
+        <Grid item xs textAlign="center">
+          <Typography variant="h4">Choose an username</Typography>
+        </Grid>
+        <Grid item xs textAlign="center" mx={3}>
+          <TextField
+            autoFocus
+            color={isValid ? "success" : "error"}
+            sx={{ accentColor: "#ff0000" }}
+            fullWidth
+            id="input-username"
+            label="Username"
+            variant="standard"
+            value={username}
+            onChange={onChange}
+          />
+        </Grid>
+        <Grid item xs textAlign="center">
+          <Button
+            disabled={!isValid}
+            color="success"
+            type="submit"
+            size="large"
+            variant="outlined"
+            startIcon={isValid ? <SendOutlined /> : <ErrorOutline />}
+          >
+            {isValid
+              ? "CHOOSE"
+              : loading
+              ? "LOOKING UP..."
+              : "USERNAME NOT AVAILABLE"}
+          </Button>
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 }
