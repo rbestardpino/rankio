@@ -1,5 +1,6 @@
 import EditReviewButton from "@components/EditReviewButton";
 import Metatags from "@components/Metatags";
+import PersonalFav from "@components/PersonalFav";
 import Rating from "@components/Rating";
 import ShareReviewButtons from "@components/ShareReviewButtons";
 import { Review as IReview, reviewFromFirestore } from "@lib/models";
@@ -114,8 +115,13 @@ export default function ReviewPage({ author, review }: Props) {
             <Grid item xs>
               <Typography variant="h5">{review.movie.title}</Typography>
             </Grid>
-            <Grid item xs my={3}>
-              <Rating value={review.rating} readOnly author={review.author} />
+            <Grid item xs my={3} container direction="row" columnSpacing={2}>
+              <Grid item xs={10} sm={11}>
+                <Rating value={review.rating} readOnly author={review.author} />
+              </Grid>
+              <Grid item xs={2} sm={1} textAlign="center">
+                <PersonalFav readOnly checked={review.personalFav} />
+              </Grid>
             </Grid>
             <Paper variant="elevation" elevation={5}>
               <Grid item xs m={2}>

@@ -6,6 +6,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Image from "next/image";
+import PersonalFav from "./PersonalFav";
 import Rating from "./Rating";
 
 interface Props {
@@ -60,8 +61,13 @@ export default function Review({ review }: Props) {
                 </Typography>
               </Grid>
             </Grid>
-            <Grid item xs>
-              <Rating value={review.rating} readOnly author={review.author} />
+            <Grid item xs container direction="row" columnSpacing={0}>
+              <Grid item xs={10} sm={11}>
+                <Rating value={review.rating} readOnly author={review.author} />
+              </Grid>
+              <Grid item xs={2} sm={1}>
+                <PersonalFav checked={review.personalFav} readOnly />
+              </Grid>
             </Grid>
             {!max420 && (
               <Grid item xs container direction="row">

@@ -39,7 +39,7 @@ export default function StringSetting({ preference }: Props) {
           | "label7"
       ] || preference.default
     );
-  }, [user]);
+  }, [user, preference.default, preference.key]);
 
   return (
     <ListItemText

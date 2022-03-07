@@ -30,7 +30,7 @@ export default function UnionSetting({ preference }: Props) {
     setOption(
       user?.preferences[preference.key as "ratingSystem"] || preference.default
     );
-  }, [user]);
+  }, [user, preference.default, preference.key]);
 
   return (
     <ListItemText

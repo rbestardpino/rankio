@@ -55,6 +55,7 @@ export default function Rating({ value, onChange, readOnly, author }: Props) {
           marks
           min={1}
           sx={{
+            color: "yellow",
             ".Mui-disabled": {
               color: "yellow",
             },
@@ -63,7 +64,6 @@ export default function Rating({ value, onChange, readOnly, author }: Props) {
             },
           }}
           max={7}
-          color="warning"
           onChange={onChange}
         />
       )) || (

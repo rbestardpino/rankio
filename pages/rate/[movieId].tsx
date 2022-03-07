@@ -1,5 +1,6 @@
 import AuthCheck from "@components/AuthCheck";
 import Metatags from "@components/Metatags";
+import PersonalFav from "@components/PersonalFav";
 import Rating from "@components/Rating";
 import { UserContext } from "@lib/context";
 import {
@@ -80,6 +81,9 @@ export default function RateMovie({ movie, existingReview }: Props) {
   const { user } = useContext(UserContext);
   const [rating, setRating] = useState(existingReview?.rating || 5);
   const [review, setReview] = useState(existingReview?.review || "");
+  const [personalFav, setPersonalFav] = useState(
+    existingReview?.personalFav || false
+  );
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -99,6 +103,7 @@ export default function RateMovie({ movie, existingReview }: Props) {
         review: review,
         author: user!.username,
         id: movie.id,
+        personalFav: personalFav,
       });
 
       if (existingReview) {
@@ -154,12 +159,20 @@ export default function RateMovie({ movie, existingReview }: Props) {
                 </Box>
               </Typography>
             </Grid>
-            <Grid item xs>
-              <Rating
-                value={rating}
-                author={user?.username}
-                onChange={(_, value) => setRating(value as number)}
-              />
+            <Grid item xs container direction="row" columnSpacing={2}>
+              <Grid item xs={10} sm={11}>
+                <Rating
+                  value={rating}
+                  author={user?.username}
+                  onChange={(_, value) => setRating(value as number)}
+                />
+              </Grid>
+              <Grid item xs={2} sm={1} textAlign="center">
+                <PersonalFav
+                  checked={personalFav}
+                  onChange={(event) => setPersonalFav(event.target.checked)}
+                />
+              </Grid>
             </Grid>
             <Grid item xs>
               <TextField

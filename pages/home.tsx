@@ -31,7 +31,7 @@ export default function Home({ recommendedMovies }: Props) {
     if (!user) {
       router.push("/");
     }
-  }, [user]);
+  }, [user, router]);
 
   return (
     <main>

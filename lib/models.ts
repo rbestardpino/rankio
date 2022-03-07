@@ -28,6 +28,7 @@ export interface Review {
   createdAt: number;
   rating: number;
   review: string;
+  personalFav: boolean;
 }
 
 export interface Movie {
@@ -52,7 +53,10 @@ export function defaultUser(
 }
 
 export function defaultReview(
-  review: Pick<Review, "author" | "id" | "movie" | "rating" | "review">
+  review: Pick<
+    Review,
+    "author" | "id" | "movie" | "rating" | "review" | "personalFav"
+  >
 ): Review {
   return {
     movie: {
@@ -65,6 +69,7 @@ export function defaultReview(
     review: review.review,
     author: review.author,
     id: review.movie.id,
+    personalFav: review.personalFav,
     lastEdit: 0,
     createdAt: 0,
   };
@@ -116,6 +121,7 @@ export function reviewFromFirestore(reviewDoc: DocumentSnapshot): Review {
     },
     rating: data?.rating,
     review: data?.review,
+    personalFav: data?.personalFav,
     lastEdit: data?.lastEdit?.toMillis() || 0,
     createdAt: data?.createdAt?.toMillis() || 0,
   };
@@ -131,6 +137,7 @@ export function reviewToFirestore(review: Review) {
     rating: review.rating,
     review: review.review,
     author: review.author,
+    personalFav: review.personalFav,
     createdAt: Timestamp.fromMillis(review.createdAt),
   };
 }
