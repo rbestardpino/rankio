@@ -3,16 +3,19 @@ import { UserContext } from "@lib/context";
 import { defaultUser, userToFirestore } from "@lib/models";
 import { auth, db } from "@lib/services/firebase";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
-import Google from "@mui/icons-material/Google";
 import SendOutlined from "@mui/icons-material/SendOutlined";
+import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import hero_horizontal from "@public/hero-horizontal.png";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, writeBatch } from "firebase/firestore";
 import debounce from "lodash.debounce";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import {
   ChangeEventHandler,
@@ -37,8 +40,9 @@ export default function Login() {
         title="RankIO | Sign in"
         description="Sign in to your RankIO account"
       ></Metatags>
-
-      {fUser && !user ? <UsernameForm /> : <SignIn />}
+      <Container sx={{ my: 5 }}>
+        {fUser && !user ? <UsernameForm /> : <SignIn />}
+      </Container>
     </main>
   );
 }
@@ -46,28 +50,38 @@ export default function Login() {
 // Sign in with Google button
 function SignIn() {
   return (
-    <Box>
-      <Grid container mt={1} spacing={4} textAlign="center">
-        <Grid item xs={12}>
-          <Typography variant="h4">
-            Join RankIO using your Google account
+    <>
+      <Backdrop open sx={{ zIndex: -1 }}>
+        <Box sx={{ opacity: 0.3 }}>
+          <Image
+            alt="hero image background"
+            src={hero_horizontal}
+            layout="fill"
+            objectFit="cover"
+            placeholder="blur"
+          />
+        </Box>
+      </Backdrop>
+      <Grid container spacing={4}>
+        <Grid item xs={12} sm={8}>
+          <Typography variant="h3" fontWeight="bold">
+            Share with your friends your opinion about movies
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <Button
-            color="inherit"
+            color="warning"
             size="large"
-            variant="outlined"
-            startIcon={<Google />}
+            variant="contained"
             onClick={async () =>
               await signInWithPopup(auth, new GoogleAuthProvider())
             }
           >
-            JOIN
+            START SHARING - IT'S FREE
           </Button>
         </Grid>
       </Grid>
-    </Box>
+    </>
   );
 }
 
