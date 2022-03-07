@@ -89,7 +89,8 @@ export default function RateMovie({ movie, existingReview }: Props) {
   const handleSubmit = async () => {
     if (
       rating !== existingReview?.rating ||
-      review !== existingReview?.review
+      review !== existingReview?.review ||
+      personalFav === existingReview?.personalFav
     ) {
       const reviewRef = doc(db, `users/${user!.uid}/reviews/${movie.id}`);
       const data = defaultReview({

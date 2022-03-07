@@ -19,7 +19,7 @@ export default function MovieCard({ movie }: Props) {
 
   return (
     <Paper variant="outlined">
-      <CardActionArea href={`/rate/${movie.id}?from=${user?.username}`}>
+      <CardActionArea href={`/rate/${movie.id}`}>
         <Grid
           container
           direction="column"
