@@ -1,3 +1,4 @@
+import Footer from "@components/Footer";
 import Navbar from "@components/Navbar";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import { UserContext } from "@lib/context";
@@ -33,6 +34,7 @@ export default function MyApp(props: MyAppProps) {
         <UserContext.Provider value={userData}>
           <Navbar />
           <Component {...pageProps} />
+          <Footer />
           <Toaster />
         </UserContext.Provider>
       </ThemeProvider>
