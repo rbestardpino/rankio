@@ -42,7 +42,7 @@ export default function Footer() {
               </Link>
             </ListItemText>
             <ListItemText>
-              <Link href="https://github.com/rbestardpino/rankio" passHref>
+              <Link href="https://github.com/bepi-tech/rankio" passHref>
                 <Typography variant="caption" sx={{ cursor: "pointer" }}>
                   Source code
                 </Typography>
@@ -50,7 +50,7 @@ export default function Footer() {
             </ListItemText>
             <ListItemText>
               <Link
-                href="https://github.com/rbestardpino/rankio/blob/main/LICENSE"
+                href="https://github.com/bepi-tech/rankio/blob/main/LICENSE"
                 passHref
               >
                 <Typography variant="caption" sx={{ cursor: "pointer" }}>
