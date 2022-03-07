@@ -24,7 +24,7 @@ export default function Footer() {
             </ListItemText>
             <ListItemText>
               <Typography variant="caption">
-                A website to track your movies' reviews
+                A website to track your movies&apos; reviews
               </Typography>
             </ListItemText>
             <ListItemText>

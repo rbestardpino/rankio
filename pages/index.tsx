@@ -77,7 +77,7 @@ function SignIn() {
               await signInWithPopup(auth, new GoogleAuthProvider())
             }
           >
-            START SHARING - IT'S FREE
+            START SHARING - IT&apos;S FREE
           </Button>
         </Grid>
       </Grid>
