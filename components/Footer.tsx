@@ -4,10 +4,15 @@ import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Footer() {
+  const { asPath } = useRouter();
   return (
-    <AppBar position="sticky">
+    <AppBar
+      position={asPath === "/" ? "fixed" : "sticky"}
+      sx={asPath === "/" ? { top: "auto", bottom: 0 } : {}}
+    >
       <Grid
         container
         direction="row"
