@@ -46,7 +46,7 @@ export default function Navbar() {
         <Toolbar>
           <Link href="/home" passHref>
             <Box component="div" sx={{ flexGrow: 1 }}>
-              <Image src={isotipo} height={50} width={50} alt="logo" />
+              <Image src={isotipo} height={50} width={50} alt="RankIO's logo" />
             </Box>
           </Link>
           {user && (

@@ -129,9 +129,10 @@ export default function RateMovie({ movie, existingReview }: Props) {
   return (
     <main>
       <Metatags
-        title={`Rate ${movie.title} | RankIO`}
-        description={`Rate ${movie.title} | RankIO`}
+        title={`Rate ${movie.title} in RankIO`}
+        description={`Give ${movie.title} your rank and share it with your friends.`}
         image={movie.poster}
+        ogEndpoint={`/rate/${movie.id}`}
       ></Metatags>
       <Container sx={{ my: 3 }}>
         <Grid container columnSpacing={3} rowSpacing={3}>

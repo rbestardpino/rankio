@@ -75,9 +75,15 @@ export default function ReviewPage({ author, review }: Props) {
   return (
     <main>
       <Metatags
-        title="Review | RankIO"
-        description={`${author}'s review of ${review.movie.title}`}
-        image={review.movie.poster}
+        title={`${author}'s review of ${review.movie.title} in RankIO`}
+        description={`Discover what ${author} says about ${review.movie.title}: "${review.review}"`}
+        image={review.movie.backdrop}
+        ogEndpoint={`/${author}/${review.id}`}
+        ogType="article"
+        articleAuthor={author}
+        articleTag={review.movie.title}
+        articlePublishedTime={review.createdAt}
+        articleEditedTime={review.lastEdit}
       />
       <Container sx={{ my: 3 }}>
         <Grid container direction="column" rowSpacing={3}>

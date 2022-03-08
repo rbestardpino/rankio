@@ -44,8 +44,12 @@ export default function Rate({ movies }: Props) {
   return (
     <main>
       <Metatags
-        title="Rate a movie | RankIO"
-        description="Rate a movie | RankIO"
+        title="Rate movies in RankIO"
+        description={`Search for a movie and give your rank. Rate ${movies
+          .map((mov) => mov.title)
+          .join(", ")}.`}
+        image={movies[0].poster}
+        ogEndpoint="/rate"
       />
       <Container sx={{ my: 3 }}>
         <Grid container direction="column" rowSpacing={3}>

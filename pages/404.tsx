@@ -7,10 +7,7 @@ import Typography from "@mui/material/Typography";
 export default function Custom404() {
   return (
     <main>
-      <Metatags
-        title="Oops.. | RankIO"
-        description="That page does not seem to exist..."
-      ></Metatags>
+      <Metatags />
       <Container sx={{ my: 5 }}>
         <Grid container rowSpacing={2} direction="column" alignItems="center">
           <Grid item xs>

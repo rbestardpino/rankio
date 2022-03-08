@@ -36,10 +36,7 @@ export default function Login() {
 
   return (
     <main>
-      <Metatags
-        title="RankIO | Sign in"
-        description="Sign in to your RankIO account"
-      ></Metatags>
+      <Metatags />
       <Container sx={{ my: 5 }}>
         {fUser && !user ? <UsernameForm /> : <SignIn />}
       </Container>

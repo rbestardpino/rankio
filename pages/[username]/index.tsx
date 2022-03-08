@@ -84,13 +84,18 @@ export default function UserProfile({ user, reviews }: Props) {
   return (
     <main>
       <Metatags
-        title={`${user?.username} | RankIO`}
-        description={`${user?.username}'s public profile`}
-        image={user?.photoURL}
+        title={`@${user.username}'s profile in RankIO`}
+        description={`Discover ${user.username} public profile in RankIO. Read his/her reviews on movies he/she watches and see interesting stats about it.`}
+        image={user.photoURL}
+        ogEndpoint={`/${user.username}`}
+        ogType="profile"
+        profileFirstName={user.displayName}
+        profileLastName={user.displayName}
+        profileUsername={user.username}
       ></Metatags>
       <Container sx={{ my: 4 }}>
-        <Typography variant="h5">Name: {user?.displayName}</Typography>
-        <Typography variant="h5">Username: {user?.username}</Typography>
+        <Typography variant="h5">Name: {user.displayName}</Typography>
+        <Typography variant="h5">Username: {user.username}</Typography>
         <Typography variant="h5">Reviews: {JSON.stringify(reviews)}</Typography>
       </Container>
     </main>
