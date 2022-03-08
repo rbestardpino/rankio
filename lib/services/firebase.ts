@@ -7,7 +7,7 @@ const isDevEnvironment = process && process.env.NODE_ENV === "development";
 
 const prodConfig = {
   apiKey: "AIzaSyA2Fcg4cavEX6bzCorr1MQdZA8MMXrxs2s",
-  authDomain: "rankio-1bbf9.firebaseapp.com",
+  authDomain: "rankio.bepi.tech",
   projectId: "rankio-1bbf9",
   storageBucket: "rankio-1bbf9.appspot.com",
   messagingSenderId: "593335153359",
