@@ -72,7 +72,7 @@ export default function Review({ review }: Props) {
             {!max420 && (
               <Grid item xs container direction="row">
                 <Grid item xs>
-                  <Typography variant="body1" noWrap>
+                  <Typography variant="body1" fontFamily="Average" noWrap>
                     {review.review}
                   </Typography>
                 </Grid>

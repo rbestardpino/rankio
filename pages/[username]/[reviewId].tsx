@@ -131,7 +131,9 @@ export default function ReviewPage({ author, review }: Props) {
             </Grid>
             <Paper variant="elevation" elevation={5}>
               <Grid item xs m={2}>
-                <Typography variant="body2">{review.review}</Typography>
+                <Typography variant="body2" fontFamily="Average">
+                  {review.review}
+                </Typography>
               </Grid>
             </Paper>
             <Grid item xs textAlign="right" my={-3}>

@@ -9,7 +9,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Nunito",
+    fontFamily: ["Roboto", "Average"].join(","),
   },
 });
 
