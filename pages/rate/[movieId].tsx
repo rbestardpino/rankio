@@ -20,20 +20,12 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import {
-  collectionGroup,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 interface Params extends ParsedUrlQuery {
@@ -43,48 +35,36 @@ interface Params extends ParsedUrlQuery {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { movieId } = context.params as Params;
 
-  const { from } = context.query;
-
-  if (!from) {
-    return {
-      props: {
-        movie: await getMovie(movieId, {}),
-      },
-    };
-  }
-
-  const reviewsSnap = await getDocs(
-    query(collectionGroup(db, "reviews"), where("author", "==", from))
-  );
-  const reviewDoc = reviewsSnap.docs.find((doc) => doc.id === movieId);
-
-  if (!reviewDoc) {
-    return {
-      props: {
-        movie: await getMovie(movieId, {}),
-      },
-    };
-  }
-  const existingReview = reviewFromFirestore(reviewDoc);
-
   return {
-    props: { movie: existingReview.movie, existingReview },
+    props: {
+      movie: await getMovie(movieId, {}),
+    },
   };
 };
 
 interface Props {
-  existingReview?: Review;
   movie: Movie;
 }
 
-export default function RateMovie({ movie, existingReview }: Props) {
+export default function RateMovie({ movie }: Props) {
   const { user } = useContext(UserContext);
-  const [rating, setRating] = useState(existingReview?.rating || 5);
-  const [review, setReview] = useState(existingReview?.review || "");
-  const [personalFav, setPersonalFav] = useState(
-    existingReview?.personalFav || false
-  );
+  const [rating, setRating] = useState(5);
+  const [review, setReview] = useState("");
+  const [personalFav, setPersonalFav] = useState(false);
+  const [existingReview, setExistingReview] = useState<Review | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!user) return;
+    getDoc(doc(db, `users/${user.uid}/reviews/${movie.id}`)).then((doc) => {
+      if (!doc.exists()) return;
+      const existingRev = reviewFromFirestore(doc);
+      setRating(existingRev.rating);
+      setReview(existingRev.review);
+      setPersonalFav(existingRev.personalFav);
+      setExistingReview(existingRev);
+    });
+  }, [user, movie.id]);
 
   const handleSubmit = async () => {
     if (

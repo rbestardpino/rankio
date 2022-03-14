@@ -1,11 +1,13 @@
-import EditReviewButton from "@components/EditReviewButton";
 import Metatags from "@components/Metatags";
 import PersonalFav from "@components/PersonalFav";
 import Rating from "@components/Rating";
 import ShareReviewButtons from "@components/ShareReviewButtons";
+import { UserContext } from "@lib/context";
 import { Review as IReview, reviewFromFirestore } from "@lib/models";
 import { db } from "@lib/services/firebase";
 import { shimmer, toBase64 } from "@lib/utils";
+import RateReview from "@mui/icons-material/RateReview";
+import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
@@ -16,6 +18,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ParsedUrlQuery } from "querystring";
+import { useContext } from "react";
 
 interface Params extends ParsedUrlQuery {
   username: string;
@@ -69,6 +72,8 @@ interface Props {
 }
 
 export default function ReviewPage({ author, review }: Props) {
+  const { user } = useContext(UserContext);
+
   const shareURL = `https://rankio.bepi.tech/${author}/${review.id}`;
   const shareTitle = `Check ${author}'s take on ${review.movie.title}`;
 
@@ -92,7 +97,16 @@ export default function ReviewPage({ author, review }: Props) {
               <Typography variant="h4">Review</Typography>
             </Grid>
             <Grid item xs={7} textAlign="right">
-              <EditReviewButton review={review} />
+              <Button
+                variant="outlined"
+                color="inherit"
+                startIcon={<RateReview />}
+                href={`/rate/${review.id}`}
+              >
+                {user?.username === review.author
+                  ? "Edit"
+                  : "Make your own review"}
+              </Button>
             </Grid>
           </Grid>
           <Grid
