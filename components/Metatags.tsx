@@ -1,4 +1,4 @@
-import img from "@public/isotipo-inverted.png";
+import img from "@public/isotipo.png";
 import Head from "next/head";
 
 interface Props {
