@@ -79,9 +79,9 @@ export default function Navbar() {
                   {user.username}
                 </MenuItem>
                 <Divider />
-                <Link href={`/${user.username}`} passHref>
+                {/* <Link href={`/${user.username}`} passHref>
                   <MenuItem onClick={handleClose}>Profile</MenuItem>
-                </Link>
+                </Link> */}
                 <MenuItem
                   onClick={() => {
                     setOpenDialog(true);

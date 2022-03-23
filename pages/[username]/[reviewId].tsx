@@ -14,12 +14,19 @@ import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { collectionGroup, getDocs, query, where } from "firebase/firestore";
+import {
+  collectionGroup,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ParsedUrlQuery } from "querystring";
 import { useContext, useState } from "react";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 
 interface Params extends ParsedUrlQuery {
   username: string;
@@ -43,7 +50,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const review: IReview = reviewFromFirestore(reviewDoc);
 
   return {
-    props: { author, review },
+    props: { reviewDocPath: reviewDoc.ref.path, review },
     revalidate: 3600,
   };
 };
@@ -68,26 +75,45 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 interface Props {
-  author: string;
+  reviewDocPath: string;
   review: IReview;
 }
 
-export default function ReviewPage({ author, review }: Props) {
+export default function ReviewPage({ reviewDocPath, review }: Props) {
   const { user } = useContext(UserContext);
   const [openRateDialog, setOpenRateDialog] = useState(false);
+  const [realtimeReview] = useDocumentData(doc(db, reviewDocPath));
 
-  const shareURL = `https://rankio.bepi.tech/${author}/${review.id}`;
-  const shareTitle = `Check ${author}'s take on ${review.movie.title}`;
+  review = realtimeReview
+    ? {
+        id: review.id,
+        author: realtimeReview.author,
+        rating: realtimeReview.rating,
+        review: realtimeReview.review,
+        personalFav: realtimeReview.personalFav,
+        movie: {
+          id: review.id,
+          backdrop: realtimeReview.movie.backdrop,
+          poster: realtimeReview.movie.poster,
+          title: realtimeReview.movie.title,
+        },
+        lastEdit: realtimeReview.lastEdit?.toMillis() || 0,
+        createdAt: realtimeReview.createdAt?.toMillis() || 0,
+      }
+    : review;
+
+  const shareURL = `https://rankio.bepi.tech/${review.author}/${review.id}`;
+  const shareTitle = `Check ${review.author}'s take on ${review.movie.title}`;
 
   return (
     <main>
       <Metatags
-        title={`${author}'s review of ${review.movie.title} in RankIO`}
-        description={`Discover what ${author} says about ${review.movie.title}: "${review.review}"`}
+        title={`${review.author}'s review of ${review.movie.title} in RankIO`}
+        description={`Discover what ${review.author} says about ${review.movie.title}: "${review.review}"`}
         image={review.movie.backdrop}
-        ogEndpoint={`/${author}/${review.id}`}
+        ogEndpoint={`/${review.author}/${review.id}`}
         ogType="article"
-        articleAuthor={author}
+        articleAuthor={review.author}
         articleTag={review.movie.title}
         articlePublishedTime={review.createdAt}
         articleEditedTime={review.lastEdit}
