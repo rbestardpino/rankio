@@ -26,7 +26,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ParsedUrlQuery } from "querystring";
 import { useContext, useState } from "react";
-import { useDocumentData } from "react-firebase-hooks/firestore";
+import { useDocument } from "react-firebase-hooks/firestore";
 
 interface Params extends ParsedUrlQuery {
   username: string;
@@ -82,25 +82,9 @@ interface Props {
 export default function ReviewPage({ reviewDocPath, review }: Props) {
   const { user } = useContext(UserContext);
   const [openRateDialog, setOpenRateDialog] = useState(false);
-  const [realtimeReview] = useDocumentData(doc(db, reviewDocPath));
+  const [realtimeSnapshot] = useDocument(doc(db, reviewDocPath));
 
-  review = realtimeReview
-    ? {
-        id: review.id,
-        author: realtimeReview.author,
-        rating: realtimeReview.rating,
-        review: realtimeReview.review,
-        personalFav: realtimeReview.personalFav,
-        movie: {
-          id: review.id,
-          backdrop: realtimeReview.movie.backdrop,
-          poster: realtimeReview.movie.poster,
-          title: realtimeReview.movie.title,
-        },
-        lastEdit: realtimeReview.lastEdit?.toMillis() || 0,
-        createdAt: realtimeReview.createdAt?.toMillis() || 0,
-      }
-    : review;
+  review = realtimeSnapshot ? reviewFromFirestore(realtimeSnapshot) : review;
 
   const shareURL = `https://rankio.bepi.tech/${review.author}/${review.id}`;
   const shareTitle = `Check ${review.author}'s take on ${review.movie.title}`;
