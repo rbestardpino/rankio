@@ -1,5 +1,4 @@
-import Footer from "@components/Footer";
-import Navbar from "@components/Navbar";
+import MainWrapper from "@components/MainWrapper";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import { UserContext } from "@lib/context";
 import createEmotionCache from "@lib/createEmotionCache";
@@ -10,7 +9,6 @@ import { ThemeProvider } from "@mui/material/styles";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import * as React from "react";
-import { Toaster } from "react-hot-toast";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -32,10 +30,9 @@ export default function MyApp(props: MyAppProps) {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <UserContext.Provider value={userData}>
-          <Navbar />
-          <Component {...pageProps} />
-          <Footer />
-          <Toaster />
+          <MainWrapper>
+            <Component {...pageProps} />
+          </MainWrapper>
         </UserContext.Provider>
       </ThemeProvider>
     </CacheProvider>
