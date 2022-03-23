@@ -1,5 +1,4 @@
 import AuthCheck from "@components/AuthCheck";
-import Metatags from "@components/Metatags";
 import PersonalFav from "@components/PersonalFav";
 import Rating from "@components/Rating";
 import { UserContext } from "@lib/context";
@@ -11,44 +10,52 @@ import {
   reviewToFirestore,
 } from "@lib/models";
 import { db } from "@lib/services/firebase";
-import { getMovie } from "@lib/services/tmdb";
 import { shimmer, toBase64 } from "@lib/utils";
 import RateReview from "@mui/icons-material/RateReview";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import { TransitionProps } from "@mui/material/transitions";
+import Zoom from "@mui/material/Zoom";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
-import { useContext, useEffect, useState } from "react";
+import {
+  forwardRef,
+  ReactElement,
+  Ref,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
 
-interface Params extends ParsedUrlQuery {
-  movieId: string;
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { movieId } = context.params as Params;
-
-  return {
-    props: {
-      movie: await getMovie(movieId, {}),
-    },
-  };
-};
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: ReactElement<any, any>;
+  },
+  ref: Ref<unknown>
+) {
+  return <Zoom ref={ref} {...props} />;
+});
 
 interface Props {
   movie: Movie;
+  open: boolean;
+  handleClose: (
+    event: React.SyntheticEvent<unknown>,
+    reason?: string | undefined
+  ) => void;
 }
 
-export default function RateMovie({ movie }: Props) {
+export default function RateModal({ movie, open, handleClose }: Props) {
   const { user } = useContext(UserContext);
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(4);
   const [review, setReview] = useState("");
   const [personalFav, setPersonalFav] = useState(false);
   const [existingReview, setExistingReview] = useState<Review | null>(null);
@@ -107,14 +114,20 @@ export default function RateMovie({ movie }: Props) {
   };
 
   return (
-    <main>
-      <Metatags
-        title={`Rate ${movie.title} in RankIO`}
-        description={`Give ${movie.title} your rank and share it with your friends.`}
-        image={movie.poster}
-        ogEndpoint={`/rate/${movie.id}`}
-      ></Metatags>
-      <Container sx={{ my: 3 }}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="md"
+      TransitionComponent={Transition}
+    >
+      <DialogTitle>
+        Rate{" "}
+        <Box fontWeight="fontWeightMedium" fontStyle="italic" display="inline">
+          {movie.title}
+        </Box>
+      </DialogTitle>
+      <DialogContent>
         <Grid container columnSpacing={3} rowSpacing={3}>
           <Grid item xs={12} lg={3}>
             <Image
@@ -128,19 +141,17 @@ export default function RateMovie({ movie }: Props) {
               )}`}
             />
           </Grid>
-          <Grid container item xs={12} lg={9} direction="column" rowSpacing={3}>
-            <Grid item xs>
-              <Typography variant="h4" textAlign="left">
-                Rate{" "}
-                <Box
-                  fontWeight="fontWeightMedium"
-                  fontStyle="italic"
-                  display="inline"
-                >
-                  {movie.title}
-                </Box>
-              </Typography>
-            </Grid>
+          <Grid
+            container
+            item
+            xs={12}
+            lg={9}
+            direction="column"
+            rowSpacing={3}
+            justifyContent="space-evenly"
+            alignItems="stretch"
+            mt={1}
+          >
             <Grid item xs container direction="row" columnSpacing={2}>
               <Grid item xs={10} sm={11}>
                 <Rating
@@ -151,7 +162,7 @@ export default function RateMovie({ movie }: Props) {
               </Grid>
               <Grid item xs={2} sm={1} textAlign="center">
                 <PersonalFav
-                  checked={personalFav}
+                  checked={false}
                   onChange={(event) => setPersonalFav(event.target.checked)}
                 />
               </Grid>
@@ -169,23 +180,28 @@ export default function RateMovie({ movie }: Props) {
                 onChange={(event) => setReview(event.target.value)}
               />
             </Grid>
-            <Grid item xs textAlign="center">
-              <AuthCheck>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  size="large"
-                  color="inherit"
-                  startIcon={<RateReview />}
-                  onClick={handleSubmit}
-                >
-                  {existingReview ? "Update" : "Rate"}
-                </Button>
-              </AuthCheck>
-            </Grid>
           </Grid>
         </Grid>
-      </Container>
-    </main>
+      </DialogContent>
+      <DialogActions>
+        <Button color="inherit" onClick={handleClose}>
+          Cancel
+        </Button>
+        <AuthCheck>
+          <Button
+            variant="outlined"
+            size="large"
+            color="inherit"
+            startIcon={<RateReview />}
+            onClick={(e) => {
+              handleClose(e);
+              handleSubmit();
+            }}
+          >
+            Save Review
+          </Button>
+        </AuthCheck>
+      </DialogActions>
+    </Dialog>
   );
 }

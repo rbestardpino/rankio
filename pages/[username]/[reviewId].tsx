@@ -1,5 +1,6 @@
 import Metatags from "@components/Metatags";
 import PersonalFav from "@components/PersonalFav";
+import RateModal from "@components/RateModal";
 import Rating from "@components/Rating";
 import ShareReviewButtons from "@components/ShareReviewButtons";
 import { UserContext } from "@lib/context";
@@ -18,7 +19,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ParsedUrlQuery } from "querystring";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 interface Params extends ParsedUrlQuery {
   username: string;
@@ -73,6 +74,7 @@ interface Props {
 
 export default function ReviewPage({ author, review }: Props) {
   const { user } = useContext(UserContext);
+  const [openRateDialog, setOpenRateDialog] = useState(false);
 
   const shareURL = `https://rankio.bepi.tech/${author}/${review.id}`;
   const shareTitle = `Check ${author}'s take on ${review.movie.title}`;
@@ -101,12 +103,17 @@ export default function ReviewPage({ author, review }: Props) {
                 variant="outlined"
                 color="inherit"
                 startIcon={<RateReview />}
-                href={`/rate/${review.id}`}
+                onClick={() => setOpenRateDialog(true)}
               >
                 {user?.username === review.author
                   ? "Edit"
                   : "Make your own review"}
               </Button>
+              <RateModal
+                movie={review.movie}
+                open={openRateDialog}
+                handleClose={() => setOpenRateDialog(false)}
+              />
             </Grid>
           </Grid>
           <Grid
