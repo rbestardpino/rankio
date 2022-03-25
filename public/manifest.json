@@ -29,7 +29,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#121210",
+  "theme_color": "#272727",
   "background_color": "#121212",
   "display": "standalone",
   "orientation": "portrait",
@@ -39,21 +39,7 @@
       "name": "Rate a movie",
       "short_name": "Rate",
       "description": "Search for a movie and rate it",
-      "url": "/rate",
-      "icons": [
-        {
-          "src": "icons/pwa/manifest-icon-512.maskable.png",
-          "sizes": "512x512",
-          "type": "image/png",
-          "purpose": "any"
-        },
-        {
-          "src": "icons/pwa/manifest-icon-512.maskable.png",
-          "sizes": "512x512",
-          "type": "image/png",
-          "purpose": "maskable"
-        }
-      ]
+      "url": "/rate"
     }
   ]
 }

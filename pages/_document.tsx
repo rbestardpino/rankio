@@ -1,6 +1,5 @@
 import createEmotionServer from "@emotion/server/create-instance";
 import createEmotionCache from "@lib/createEmotionCache";
-import theme from "@lib/theme";
 import Document, { Head, Html, Main, NextScript } from "next/document";
 
 export default class MyDocument extends Document {
@@ -144,8 +143,8 @@ export default class MyDocument extends Document {
             href="icons/pwa/apple-splash-dark-1136-640.jpg"
             media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
           />
-          {/* PWA primary color */}
-          <meta name="theme-color" content={theme.palette.background.default} />
+
+          <meta name="theme-color" content="#272727" />
           <link rel="shortcut icon" href="/icons/isotipo.svg" />
           <link
             rel="stylesheet"
