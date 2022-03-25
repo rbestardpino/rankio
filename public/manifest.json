@@ -39,7 +39,21 @@
       "name": "Rate a movie",
       "short_name": "Rate",
       "description": "Search for a movie and rate it",
-      "url": "/rate"
+      "url": "/rate",
+      "icons": [
+        {
+          "src": "icons/pwa/manifest-icon-96.maskable.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "icons/pwa/manifest-icon-96.maskable.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
     }
   ]
 }
