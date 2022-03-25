@@ -1,7 +1,7 @@
 {
   "name": "RankIO - A website to track your movies' reviews",
   "short_name": "RankIO",
-  "start_url": "/home",
+  "start_url": "/",
   "scope": "/",
   "icons": [
     {
