@@ -1,4 +1,4 @@
-import logo from "@public/icons/isotipo.svg";
+import logo from "@public/icons/pwa/manifest-icon-512.maskable.png";
 import Head from "next/head";
 
 interface Props {
