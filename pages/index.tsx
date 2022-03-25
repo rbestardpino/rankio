@@ -1,4 +1,3 @@
-// import Metatags from "@components/Metatags";
 import Metatags from "@components/Metatags";
 import { UserContext } from "@lib/context";
 import { defaultUser, userToFirestore } from "@lib/models";
@@ -9,11 +8,10 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-// import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import hero_horizontal from "@public/hero-horizontal.png";
+import hero_horizontal from "@public/screenshots/hero-horizontal.png";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, writeBatch } from "firebase/firestore";
 import debounce from "lodash.debounce";

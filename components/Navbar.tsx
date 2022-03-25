@@ -9,7 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
-import isotipo from "@public/isotipo.svg";
+import isotipo from "@public/icons/isotipo.svg";
 import { signOut } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -45,7 +45,7 @@ export default function Navbar() {
       <AppBar position="static">
         <Toolbar>
           <Link href="/home" passHref>
-            <Box component="div" sx={{ flexGrow: 1 }}>
+            <Box component="div" sx={{ flexGrow: 1 }} mt={1}>
               <Image src={isotipo} height={50} width={50} alt="RankIO's logo" />
             </Box>
           </Link>

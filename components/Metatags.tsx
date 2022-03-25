@@ -1,4 +1,4 @@
-import img from "@public/isotipo.png";
+import logo from "@public/icons/isotipo.svg";
 import Head from "next/head";
 
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
 export default function Metatags({
   title = "RankIO - A website to track your movies' reviews.",
   description = "Join RankIO to share with your friends your opinion about movies. Rank the movies you watch and share them with everyone. Discover what others think of movies you watch.",
-  image = img.src,
+  image = logo.src,
   ogEndpoint = "/",
   ogType,
   articleAuthor,

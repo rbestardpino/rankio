@@ -1,6 +1,6 @@
 import { Movie, movieFromJSON } from "@lib/models";
-import notfoundbackdrop from "@public/backdropnotfound.png";
-import notfoundposter from "@public/posternotfound.png";
+import backdrop_not_found from "@public/utils/backdrop-not-found.png";
+import poster_not_found from "@public/utils/poster-not-found.png";
 
 const CONFIG = {
   api_key: "fc38338f58588b810badb2febb318cf1",
@@ -8,8 +8,8 @@ const CONFIG = {
   images_uri: "https://image.tmdb.org/t/p/w500",
   timeout: 5000,
   language: "en-US",
-  poster_not_found: notfoundposter.src,
-  backdrop_not_found: notfoundbackdrop.src,
+  poster_not_found: poster_not_found.src,
+  backdrop_not_found: backdrop_not_found.src,
 };
 
 function generateQuery(options: any): string {

@@ -1,7 +1,7 @@
 import styles from "@components/Loader.module.css";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import logo from "@public/favicon-inverted.ico";
+import logo from "@public/icons/isotipo.svg";
 import Image from "next/image";
 
 export default function Loader() {
