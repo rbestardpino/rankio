@@ -1,5 +1,9 @@
 .rotate {
-  animation: rotation 3s infinite linear;
+  animation: rotation 2s infinite;
+}
+
+.zoom {
+  animation: zoom 2s infinite;
 }
 
 @keyframes rotation {
@@ -8,5 +12,17 @@
   }
   to {
     transform: rotate(359deg);
+  }
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(0.5, 0.5);
+  }
+  100% {
+    transform: scale(1, 1);
   }
 }

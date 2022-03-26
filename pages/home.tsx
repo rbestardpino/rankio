@@ -27,6 +27,7 @@ interface Props {
 export default function Home({ recommendedMovies }: Props) {
   const router = useRouter();
   const { user } = useContext(UserContext);
+
   useEffect(() => {
     if (!user) {
       router.push("/");

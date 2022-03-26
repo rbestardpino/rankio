@@ -30,14 +30,9 @@ export default function Login() {
   const { user, fUser } = useContext(UserContext);
   const router = useRouter();
 
-  if (user) {
-    router.push("/home");
-  }
+  if (user) router.push("/home");
 
   return (
-    // <>
-    //   <Loader />
-    // </>
     <main>
       <Metatags />
       <Container sx={{ my: 5 }}>

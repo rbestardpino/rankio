@@ -53,9 +53,6 @@ export default function Navbar() {
             <>
               <IconButton
                 size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
                 onClick={(event) => setAnchorEl(event.currentTarget)}
                 color="inherit"
               >

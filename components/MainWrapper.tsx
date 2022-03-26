@@ -1,8 +1,9 @@
 import Footer from "@components/Footer";
-// import Loader from "@components/Loader";
+import Loader from "@components/Loader";
 import Navbar from "@components/Navbar";
-// import { UserContext } from "@lib/context";
+import { auth } from "@lib/services/firebase";
 import { ReactElement } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Toaster } from "react-hot-toast";
 
 interface Props {
@@ -11,9 +12,9 @@ interface Props {
 }
 
 export default function MainWrapper(props: Props) {
-  // const { fUser, user } = useContext(UserContext);
+  const [_, loading] = useAuthState(auth);
 
-  // if (fUser && !user) return <Loader />;
+  if (loading) return <Loader />;
 
   return (
     <>

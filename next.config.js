@@ -10,5 +10,6 @@ module.exports = withPWA({
   pwa: {
     dest: "public",
     runtimeCaching,
+    disable: process && process.env.NODE_ENV === "development",
   },
 });
