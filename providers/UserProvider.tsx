@@ -5,6 +5,7 @@ import {
   userFromFirestore,
 } from "@lib/models";
 import { auth, db } from "@lib/services/firebase";
+import { User as FUser } from "firebase/auth";
 import {
   collection,
   doc,
@@ -12,33 +13,58 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import {
+  createContext,
+  ReactElement,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-// Custom hook to read auth record, user profile doc and user reviews
-export function useUserData() {
-  const [fUser] = useAuthState(auth);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [user, setUser] = useState<User | null>(null);
+const UserContext = createContext<{
+  fUser: FUser | null | undefined;
+  user: User | null;
+  reviews: Review[];
+  loading: boolean;
+}>({
+  fUser: null,
+  user: null,
+  reviews: [],
+  loading: true,
+});
 
+interface Props {
+  children: ReactElement;
+}
+
+export default function UserProvider(props: Props) {
+  const [fUser, loadingF] = useAuthState(auth);
+  const [user, setUser] = useState<User | null>(null);
+  const [loadingU, setLoadingU] = useState(true);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loadingR, setLoadingR] = useState(true);
+
+  // User doc useeffect
   useEffect(() => {
-    // turn off realtime subscription
     let unsubscribe;
 
     if (fUser) {
       const ref = doc(db, "users", fUser.uid);
       unsubscribe = onSnapshot(ref, (doc) => {
+        setLoadingU(false);
         setUser(userFromFirestore(doc));
       });
     } else {
+      setLoadingU(false);
       setUser(null);
     }
 
     return unsubscribe;
   }, [fUser]);
 
+  // Reviews useeffect
   useEffect(() => {
-    // turn off realtime subscription
     let unsubscribe;
 
     if (fUser) {
@@ -51,14 +77,31 @@ export function useUserData() {
         snap.forEach((doc) => {
           _reviews.push(reviewFromFirestore(doc));
         });
+        setLoadingR(false);
         setReviews(_reviews);
       });
     } else {
+      setLoadingR(false);
       setReviews([]);
     }
 
     return unsubscribe;
   }, [fUser]);
 
-  return { fUser, user, reviews };
+  return (
+    <UserContext.Provider
+      value={{
+        fUser,
+        user,
+        reviews,
+        loading: loadingF || loadingU || loadingR,
+      }}
+    >
+      {props.children}
+    </UserContext.Provider>
+  );
+}
+
+export function useUserData() {
+  return useContext(UserContext);
 }

@@ -1,4 +1,3 @@
-import { UserContext } from "@lib/context";
 import { Preference } from "@lib/preferences";
 import { db } from "@lib/services/firebase";
 import { InfoOutlined } from "@mui/icons-material";
@@ -6,14 +5,15 @@ import ListItemText from "@mui/material/ListItemText";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import { doc, updateDoc } from "firebase/firestore";
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { useUserData } from "providers/UserProvider";
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface Props {
   preference: Preference;
 }
 
 export default function StringSetting({ preference }: Props) {
-  const { user } = useContext(UserContext);
+  const { user } = useUserData();
 
   const [value, setValue] = useState(preference.default);
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

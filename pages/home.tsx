@@ -1,7 +1,6 @@
 import Metatags from "@components/Metatags";
 import MovieCard from "@components/MovieCard";
 import ReviewsList from "@components/ReviewsList";
-import { UserContext } from "@lib/context";
 import { Movie } from "@lib/models";
 import { getTopMovies } from "@lib/services/tmdb";
 import { RateReview } from "@mui/icons-material";
@@ -11,7 +10,8 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useUserData } from "providers/UserProvider";
+import { useEffect, useState } from "react";
 
 export const getStaticProps: GetStaticProps = async () => {
   const recommendedMovies = await getTopMovies({});
@@ -26,13 +26,13 @@ interface Props {
 
 export default function Home({ recommendedMovies }: Props) {
   const router = useRouter();
-  const { user } = useContext(UserContext);
+  const { user, loading } = useUserData();
 
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       router.push("/");
     }
-  }, [user, router]);
+  }, [user, router, loading]);
 
   return (
     <main>
@@ -82,7 +82,7 @@ function Recommendation({ recommendedMovies }: Props) {
 }
 
 function YourReviews() {
-  const { reviews } = useContext(UserContext);
+  const { reviews } = useUserData();
 
   return (
     <Grid container direction="column" rowSpacing={3}>

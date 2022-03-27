@@ -1,7 +1,6 @@
 import AuthCheck from "@components/AuthCheck";
 import PersonalFav from "@components/PersonalFav";
 import Rating from "@components/Rating";
-import { UserContext } from "@lib/context";
 import {
   defaultReview,
   Movie,
@@ -25,14 +24,8 @@ import Zoom from "@mui/material/Zoom";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import {
-  forwardRef,
-  ReactElement,
-  Ref,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useUserData } from "providers/UserProvider";
+import { forwardRef, ReactElement, Ref, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const Transition = forwardRef(function Transition(
@@ -54,7 +47,7 @@ interface Props {
 }
 
 export default function RateModal({ movie, open, handleClose }: Props) {
-  const { user } = useContext(UserContext);
+  const { user } = useUserData();
   const [rating, setRating] = useState(4);
   const [review, setReview] = useState("");
   const [personalFav, setPersonalFav] = useState(false);

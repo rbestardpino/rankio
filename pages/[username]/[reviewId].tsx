@@ -3,7 +3,6 @@ import PersonalFav from "@components/PersonalFav";
 import RateModal from "@components/RateModal";
 import Rating from "@components/Rating";
 import ShareReviewButtons from "@components/ShareReviewButtons";
-import { UserContext } from "@lib/context";
 import { Review as IReview, reviewFromFirestore } from "@lib/models";
 import { db } from "@lib/services/firebase";
 import { shimmer, toBase64 } from "@lib/utils";
@@ -24,8 +23,9 @@ import {
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { useUserData } from "providers/UserProvider";
 import { ParsedUrlQuery } from "querystring";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useDocument } from "react-firebase-hooks/firestore";
 
 interface Params extends ParsedUrlQuery {
@@ -80,7 +80,7 @@ interface Props {
 }
 
 export default function ReviewPage({ reviewDocPath, review }: Props) {
-  const { user } = useContext(UserContext);
+  const { user } = useUserData();
   const [openRateDialog, setOpenRateDialog] = useState(false);
   const [realtimeSnapshot] = useDocument(doc(db, reviewDocPath));
 

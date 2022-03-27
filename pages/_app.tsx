@@ -1,13 +1,12 @@
 import MainWrapper from "@components/MainWrapper";
 import { CacheProvider, EmotionCache } from "@emotion/react";
-import { UserContext } from "@lib/context";
 import createEmotionCache from "@lib/createEmotionCache";
-import { useUserData } from "@lib/hooks";
 import theme from "@lib/theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { AppProps } from "next/app";
 import Head from "next/head";
+import UserProvider from "providers/UserProvider";
 import * as React from "react";
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -19,7 +18,6 @@ interface MyAppProps extends AppProps {
 
 export default function MyApp(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
-  const userData = useUserData();
 
   return (
     <CacheProvider value={emotionCache}>
@@ -29,11 +27,11 @@ export default function MyApp(props: MyAppProps) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <UserContext.Provider value={userData}>
+        <UserProvider>
           <MainWrapper>
             <Component {...pageProps} />
           </MainWrapper>
-        </UserContext.Provider>
+        </UserProvider>
       </ThemeProvider>
     </CacheProvider>
   );

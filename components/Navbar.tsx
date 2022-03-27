@@ -1,4 +1,3 @@
-import { UserContext } from "@lib/context";
 import { auth } from "@lib/services/firebase";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
@@ -14,12 +13,13 @@ import { signOut } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useUserData } from "providers/UserProvider";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import SettingsModal from "./SettingsModal";
 
 export default function Navbar() {
-  const { user } = useContext(UserContext);
+  const { user } = useUserData();
   const [anchorEl, setAnchorEl] = useState<
     Element | ((element: Element) => Element) | null | undefined
   >(null);
@@ -44,7 +44,7 @@ export default function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Link href="/home" passHref>
+          <Link href={asPath === "/" ? "/" : "/home"} passHref>
             <Box component="div" sx={{ flexGrow: 1 }} mt={1}>
               <Image src={isotipo} height={50} width={50} alt="RankIO's logo" />
             </Box>

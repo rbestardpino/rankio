@@ -1,4 +1,3 @@
-import { UserContext } from "@lib/context";
 import { Preference } from "@lib/preferences";
 import { db } from "@lib/services/firebase";
 import { InfoOutlined } from "@mui/icons-material";
@@ -7,14 +6,15 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Tooltip from "@mui/material/Tooltip";
 import { doc, updateDoc } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
+import { useUserData } from "providers/UserProvider";
+import { useEffect, useState } from "react";
 
 interface Props {
   preference: Preference;
 }
 
 export default function UnionSetting({ preference }: Props) {
-  const { user } = useContext(UserContext);
+  const { user } = useUserData();
 
   const [option, setOption] = useState(preference.default);
   const handleChange = (event: SelectChangeEvent) => {

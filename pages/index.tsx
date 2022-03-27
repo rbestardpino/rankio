@@ -1,5 +1,4 @@
 import Metatags from "@components/Metatags";
-import { UserContext } from "@lib/context";
 import { defaultUser, userToFirestore } from "@lib/models";
 import { auth, db } from "@lib/services/firebase";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
@@ -17,20 +16,24 @@ import { doc, getDoc, writeBatch } from "firebase/firestore";
 import debounce from "lodash.debounce";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useUserData } from "providers/UserProvider";
 import {
   ChangeEventHandler,
   FormEventHandler,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from "react";
 
 export default function Login() {
-  const { user, fUser } = useContext(UserContext);
+  const { user, fUser, loading } = useUserData();
   const router = useRouter();
 
-  if (user) router.push("/home");
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/home");
+    }
+  }, [user, router, loading]);
 
   return (
     <main>
@@ -86,7 +89,7 @@ function UsernameForm() {
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { fUser } = useContext(UserContext);
+  const { fUser } = useUserData();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();

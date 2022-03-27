@@ -1,4 +1,3 @@
-import { UserContext } from "@lib/context";
 import { userFromFirestore } from "@lib/models";
 import { defaultPreferences } from "@lib/preferences";
 import { db } from "@lib/services/firebase";
@@ -6,7 +5,8 @@ import Box from "@mui/material/Box";
 import MRating from "@mui/material/Rating";
 import Slider from "@mui/material/Slider";
 import { doc, getDoc } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
+import { useUserData } from "providers/UserProvider";
+import { useEffect, useState } from "react";
 
 interface Props {
   value: number;
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function Rating({ value, onChange, readOnly, author }: Props) {
-  const { user } = useContext(UserContext);
+  const { user } = useUserData();
   const [userPreferences, setUserPreferences] = useState(
     JSON.parse(JSON.stringify(defaultPreferences))
   );
