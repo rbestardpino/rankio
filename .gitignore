@@ -24,11 +24,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# local env files and config
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+**/rankio-1bbf9-firebase-adminsdk-ga8z8-610bc45a30.json
+**/rankio-dev-firebase-adminsdk-z7pdu-41859d4d75.json
 
 # vercel
 .vercel

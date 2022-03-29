@@ -2,22 +2,48 @@ import Metatags from "@components/Metatags";
 import MovieCard from "@components/MovieCard";
 import ReviewsList from "@components/ReviewsList";
 import { Movie } from "@lib/models";
+import { db } from "@lib/services/firebase";
+import { auth as adminAuth } from "@lib/services/firebaseAdmin";
 import { getTopMovies } from "@lib/services/tmdb";
 import { RateReview } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { GetStaticProps } from "next";
-import { useRouter } from "next/router";
+import { doc, getDoc } from "firebase/firestore";
+import { GetServerSideProps } from "next";
+import nookies from "nookies";
 import { useUserData } from "providers/UserProvider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cookies = nookies.get(context);
   const recommendedMovies = await getTopMovies({});
-  return {
-    props: { recommendedMovies },
-  };
+
+  if (!cookies.token) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  } else {
+    const token = await adminAuth.verifyIdToken(cookies.token);
+    const _doc = await getDoc(doc(db, `users/${token.uid}`));
+
+    if (!_doc.exists()) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    } else {
+      return {
+        props: { recommendedMovies },
+      };
+    }
+  }
 };
 
 interface Props {
@@ -25,15 +51,6 @@ interface Props {
 }
 
 export default function Home({ recommendedMovies }: Props) {
-  const router = useRouter();
-  const { user, loading } = useUserData();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/");
-    }
-  }, [user, router, loading]);
-
   return (
     <main>
       <Metatags />
