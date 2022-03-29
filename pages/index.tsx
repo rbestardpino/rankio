@@ -1,6 +1,7 @@
 import Metatags from "@components/Metatags";
 import { defaultUser, userToFirestore } from "@lib/models";
 import { auth, db } from "@lib/services/firebase";
+import { auth as adminAuth } from "@lib/services/firebaseAdmin";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import SendOutlined from "@mui/icons-material/SendOutlined";
 import Backdrop from "@mui/material/Backdrop";
@@ -14,8 +15,9 @@ import hero_horizontal from "@public/screenshots/hero-horizontal.png";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, writeBatch } from "firebase/firestore";
 import debounce from "lodash.debounce";
+import { GetServerSideProps } from "next";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import nookies from "nookies";
 import { useUserData } from "providers/UserProvider";
 import {
   ChangeEventHandler,
@@ -25,21 +27,43 @@ import {
   useState,
 } from "react";
 
-export default function Login() {
-  const { user, fUser, loading } = useUserData();
-  const router = useRouter();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cookies = nookies.get(context);
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.push("/home");
+  if (cookies.token) {
+    const token = await adminAuth.verifyIdToken(cookies.token);
+    const _doc = await getDoc(doc(db, `users/${token.uid}`));
+    if (_doc.exists()) {
+      return {
+        redirect: {
+          destination: "/home",
+          permanent: false,
+        },
+      };
+    } else {
+      return {
+        props: {
+          usernameStep: true,
+        },
+      };
     }
-  }, [user, router, loading]);
+  } else {
+    return {
+      props: { usernameStep: false },
+    };
+  }
+};
 
+interface Props {
+  usernameStep: boolean;
+}
+
+export default function Login({ usernameStep }: Props) {
   return (
     <main>
       <Metatags />
       <Container sx={{ my: 5 }}>
-        {fUser && !user ? <UsernameForm /> : <SignIn />}
+        {usernameStep ? <UsernameForm /> : <SignIn />}
       </Container>
     </main>
   );

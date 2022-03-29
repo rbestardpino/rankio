@@ -20,6 +20,7 @@ import SettingsModal from "./SettingsModal";
 
 export default function Navbar() {
   const { user } = useUserData();
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<
     Element | ((element: Element) => Element) | null | undefined
   >(null);
@@ -94,6 +95,7 @@ export default function Navbar() {
                 <MenuItem
                   onClick={async () => {
                     handleClose();
+                    router.push("/");
                     await signOut(auth);
                   }}
                   dense

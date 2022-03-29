@@ -5,7 +5,7 @@ import {
   userFromFirestore,
 } from "@lib/models";
 import { auth, db } from "@lib/services/firebase";
-import { User as FUser } from "firebase/auth";
+import { onIdTokenChanged, User as FUser } from "firebase/auth";
 import {
   collection,
   doc,
@@ -13,6 +13,7 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
+import nookies from "nookies";
 import {
   createContext,
   ReactElement,
@@ -20,7 +21,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 const UserContext = createContext<{
   fUser: FUser | null | undefined;
@@ -39,11 +39,27 @@ interface Props {
 }
 
 export default function UserProvider(props: Props) {
-  const [fUser, loadingF] = useAuthState(auth);
+  const [fUser, setFUser] = useState<FUser | null>(null);
+  const [loadingF, setLoadingF] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [loadingU, setLoadingU] = useState(true);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loadingR, setLoadingR] = useState(true);
+
+  // Auth useeffect
+  useEffect(() => {
+    return onIdTokenChanged(auth, async (_user) => {
+      if (_user) {
+        const token = await _user.getIdToken();
+        setFUser(_user);
+        nookies.set(undefined, "token", token, { path: "/" });
+      } else {
+        setFUser(null);
+        nookies.set(undefined, "token", "", { path: "/" });
+      }
+      setLoadingF(false);
+    });
+  }, []);
 
   // User doc useeffect
   useEffect(() => {
