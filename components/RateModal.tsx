@@ -70,7 +70,7 @@ export default function RateModal({ movie, open, handleClose }: Props) {
     if (
       rating !== existingReview?.rating ||
       review !== existingReview?.review ||
-      personalFav === existingReview?.personalFav
+      personalFav !== existingReview?.personalFav
     ) {
       const reviewRef = doc(db, `users/${user!.uid}/reviews/${movie.id}`);
       const data = defaultReview({
@@ -155,7 +155,7 @@ export default function RateModal({ movie, open, handleClose }: Props) {
               </Grid>
               <Grid item xs={2} sm={1} textAlign="center">
                 <PersonalFav
-                  checked={false}
+                  checked={personalFav}
                   onChange={(event) => setPersonalFav(event.target.checked)}
                 />
               </Grid>
