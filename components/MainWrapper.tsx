@@ -1,6 +1,6 @@
 import Footer from "@components/Footer";
 import Navbar from "@components/Navbar";
-import Router from "next/router";
+import { Router } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import Loader from "./Loader";
@@ -30,14 +30,14 @@ export default function MainWrapper(props: Props) {
     };
   }, []);
 
-  if (loading) return <Loader />;
-  else
-    return (
-      <>
-        <Navbar />
-        {props.children}
-        <Footer />
-        <Toaster />
-      </>
-    );
+  return loading ? (
+    <Loader />
+  ) : (
+    <>
+      <Navbar />
+      {props.children}
+      <Footer />
+      <Toaster />
+    </>
+  );
 }

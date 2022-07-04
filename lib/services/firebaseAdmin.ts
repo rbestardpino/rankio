@@ -1,3 +1,4 @@
+import { apps } from "firebase-admin";
 import { cert, initializeApp, ServiceAccount } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 
@@ -27,7 +28,8 @@ const devConfig = {
 
 // Initialize Firebase
 const app = isDevEnvironment
-  ? initializeApp(devConfig, "dev")
-  : initializeApp(prodConfig, "prod");
+  ? apps.find((_app) => _app?.name === "dev") || initializeApp(devConfig, "dev")
+  : apps.find((_app) => _app?.name === "prod") ||
+    initializeApp(prodConfig, "prod");
 
 export const auth = getAuth(app);

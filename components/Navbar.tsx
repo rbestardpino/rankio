@@ -95,7 +95,6 @@ export default function Navbar() {
                 <MenuItem
                   onClick={async () => {
                     handleClose();
-                    router.push("/");
                     await signOut(auth);
                   }}
                   dense

@@ -12,11 +12,13 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import hero_horizontal from "@public/screenshots/hero-horizontal.png";
+import { DecodedIdToken } from "firebase-admin/auth";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, writeBatch } from "firebase/firestore";
 import debounce from "lodash.debounce";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import nookies from "nookies";
 import { useUserData } from "providers/UserProvider";
 import {
@@ -31,7 +33,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = nookies.get(context);
 
   if (cookies.token) {
-    const token = await adminAuth.verifyIdToken(cookies.token);
+    let token: DecodedIdToken;
+    try {
+      token = await adminAuth.verifyIdToken(cookies.token);
+    } catch (error) {
+      console.log(error);
+      return {
+        props: {
+          usernameStep: false,
+        },
+      };
+    }
     const _doc = await getDoc(doc(db, `users/${token.uid}`));
     if (_doc.exists()) {
       return {
@@ -59,6 +71,13 @@ interface Props {
 }
 
 export default function Login({ usernameStep }: Props) {
+  const router = useRouter();
+  const { user } = useUserData();
+
+  if (user) {
+    router.push("/home");
+  }
+
   return (
     <main>
       <Metatags />

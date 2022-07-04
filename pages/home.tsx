@@ -10,8 +10,10 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { DecodedIdToken } from "firebase-admin/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import nookies from "nookies";
 import { useUserData } from "providers/UserProvider";
 import { useState } from "react";
@@ -28,7 +30,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   } else {
-    const token = await adminAuth.verifyIdToken(cookies.token);
+    let token: DecodedIdToken;
+    try {
+      token = await adminAuth.verifyIdToken(cookies.token);
+    } catch (error) {
+      console.log(error);
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
     const _doc = await getDoc(doc(db, `users/${token.uid}`));
 
     if (!_doc.exists()) {
@@ -51,6 +64,13 @@ interface Props {
 }
 
 export default function Home({ recommendedMovies }: Props) {
+  const router = useRouter();
+  const { user } = useUserData();
+
+  if (user) {
+    router.push("/");
+  }
+
   return (
     <main>
       <Metatags />
