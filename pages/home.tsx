@@ -1,3 +1,4 @@
+import Loader from "@components/Loader";
 import Metatags from "@components/Metatags";
 import MovieCard from "@components/MovieCard";
 import ReviewsList from "@components/ReviewsList";
@@ -29,12 +30,12 @@ export default function Home({ recommendedMovies }: Props) {
   const { user, loading } = useUserData();
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/");
-    }
-  }, [user, router, loading]);
+    if (!loading && !user) router.push("/");
+  }, [user]);
 
-  return (
+  return loading ? (
+    <Loader />
+  ) : (
     <main>
       <Metatags />
       <Container sx={{ my: 4 }}>

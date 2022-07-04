@@ -1,3 +1,4 @@
+import Loader from "@components/Loader";
 import Metatags from "@components/Metatags";
 import { defaultUser, userToFirestore } from "@lib/models";
 import { auth, db } from "@lib/services/firebase";
@@ -30,12 +31,12 @@ export default function Login() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && user) {
-      router.push("/home");
-    }
-  }, [user, router, loading]);
+    if (!loading && user) router.push("/home");
+  }, [user]);
 
-  return (
+  return loading ? (
+    <Loader />
+  ) : (
     <main>
       <Metatags />
       <Container sx={{ my: 5 }}>
